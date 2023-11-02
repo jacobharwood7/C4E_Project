@@ -1,5 +1,6 @@
 ﻿#include "HitScanWeapon.h"
 
+#include "WeaponType.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -9,8 +10,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogScan, Display, All);
 
 bool AHitScanWeapon::Fire_Implementation()
 {
-	_Damage = 10.0f;
-	_Range = 50.0f;
 	UE_LOG(LogScan,Display,TEXT("FIRING HITSCAN WEAPON CLASS"))
 	UWorld* const world=GetWorld();
 
@@ -22,12 +21,12 @@ bool AHitScanWeapon::Fire_Implementation()
 	
 
 	if(UKismetSystemLibrary::LineTraceSingle(GetWorld(),Origin,End,UEngineTypes::ConvertToTraceType(ECC_Visibility)
-		,true,{this,GetOwner()},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,5.0f))
+		,true,{this,GetOwner()},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,1.0f))
 	{
 		UE_LOG(LogScan, Display, TEXT("Hit position: %s"),*Hit.ImpactPoint.ToString())
 		if(Hit.GetActor()->CanBeDamaged())
 		{
-			UGameplayStatics::ApplyDamage(Hit.GetActor(),_Damage,nullptr,this,UDamageType::StaticClass());
+			UGameplayStatics::ApplyDamage(Hit.GetActor(),_typeData->_damage,nullptr,this,UDamageType::StaticClass());
 		}
 		return true;
 	}

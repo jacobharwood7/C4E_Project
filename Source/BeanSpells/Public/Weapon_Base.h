@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "Weapon_Base.generated.h"
 
+class UWeaponType;
 class UArrowComponent;
 
 UCLASS(Abstract)
@@ -20,6 +21,9 @@ public:
 
 	virtual bool Fire_Implementation() override;
 
+	void Init(UWeaponType* type);
+	
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -31,4 +35,7 @@ protected:
 	
 	UPROPERTY(VisibleDefaultsOnly,BlueprintReadOnly)
 	TObjectPtr<UArrowComponent> _Muzzle;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<UWeaponType> _typeData;
 };

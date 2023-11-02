@@ -27,8 +27,9 @@ void AC4ECharacter::Init_Implementation()
 		FActorSpawnParameters spawnParams;
 		spawnParams.Owner = this;
 		spawnParams.Instigator = this;
-		TObjectPtr<AActor> spawnedGun = GetWorld()->SpawnActor(_DefaultWeapon, &_weaponAttachPoint->GetComponentTransform(),spawnParams);
+		TObjectPtr<AWeapon_Base> spawnedGun = GetWorld()->SpawnActor<AWeapon_Base>(_DefaultWeapon.Get(), _weaponAttachPoint->GetComponentTransform(),spawnParams);
 		spawnedGun->AttachToComponent(_weaponAttachPoint,FAttachmentTransformRules::SnapToTargetIncludingScale);
+		spawnedGun->Init(_DefaultWeaponType);
 		if(UKismetSystemLibrary::DoesImplementInterface(spawnedGun, UFireable::StaticClass()))
 		{
 			_FireableRef = spawnedGun;

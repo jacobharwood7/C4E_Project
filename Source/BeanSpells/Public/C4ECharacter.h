@@ -8,6 +8,7 @@
 #include "C4ECharacter.generated.h"
 
 
+class UWeaponType;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
@@ -45,6 +46,9 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<AWeapon_Base> _DefaultWeapon;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<UWeaponType> _DefaultWeaponType;
+	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<AActor> _FireableRef;
 

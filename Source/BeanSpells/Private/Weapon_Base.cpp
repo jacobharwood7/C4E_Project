@@ -1,5 +1,6 @@
 ﻿#include "Weapon_Base.h"
 
+#include "WeaponType.h"
 #include "Components/ArrowComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeapon, Display, All);
@@ -13,14 +14,18 @@ AWeapon_Base::AWeapon_Base()
 	_Muzzle = CreateDefaultSubobject<UArrowComponent>(TEXT("Muzzle"));
 	_Muzzle->SetupAttachment(_Mesh);
 	
-
-	
 }
 
 bool AWeapon_Base::Fire_Implementation()
 {
 	UE_LOG(LogWeapon, Display, TEXT("FIRING WEAPON CLASS"));
 	return true;
+}
+
+void AWeapon_Base::Init(UWeaponType* type)
+{
+	_typeData = type;
+	_Mesh->SetSkeletalMesh(_typeData->_weaponMesh);
 }
 
 void AWeapon_Base::BeginPlay()
