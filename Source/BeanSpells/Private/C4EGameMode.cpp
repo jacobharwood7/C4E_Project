@@ -4,12 +4,15 @@
 #include "C4EGameMode.h"
 
 #include "C4EPlayerController.h"
+#include "GameRule.h"
+#include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
 AC4EGameMode::AC4EGameMode() : Super()
 {
 	_countdownTimer = 3;
+	_gameRulesLeft = 0;
 }
 
 AActor* AC4EGameMode::FindPlayerStart_Implementation(AController* Player, const FString& IncomingName)
@@ -56,10 +59,48 @@ void AC4EGameMode::DecreaseCountdown()
 	}
 }
 
+void AC4EGameMode::Handle_GameRuleCompleted(UGameRule* rule)
+{
+	if(*_gameRuleManagers.Find(rule)){return;}
+
+	_gameRulesLeft--;
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Blue,FString::Printf(TEXT("Game Rule completed. %d Remaining"), _gameRulesLeft));
+	if(_gameRulesLeft!=0){return;}
+	EndMatch();
+	
+	
+}
+
+void AC4EGameMode::Handle_GameRulePointsScored(AController* scorer, int points)
+{
+	AC4EPlayerController* castedPC = Cast<AC4EPlayerController>(scorer);
+	if(castedPC)
+	{
+		castedPC->AddScore(points);
+	}
+}
+
 void AC4EGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	//TODO Add game rule stuff
+
+	TArray<UActorComponent*> outComponents;
+	GetComponents(outComponents);
+	for(UActorComponent* comp : outComponents)
+	{
+		if(UGameRule* rule = Cast<UGameRule>(comp))
+		{
+			_gameRuleManagers.Add(rule, rule->_isOptional);
+			rule->Init();
+			rule->OnGameRuleCompleted.AddUniqueDynamic(this,&AC4EGameMode::Handle_GameRuleCompleted);
+			rule->OnGameRulePointsScored.AddUniqueDynamic(this,&AC4EGameMode::Handle_GameRulePointsScored);
+
+			if(!rule->_isOptional)
+			{
+				_gameRulesLeft++;
+			}
+		}
+	}
 	
 }
 

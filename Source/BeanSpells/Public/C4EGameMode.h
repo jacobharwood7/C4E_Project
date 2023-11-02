@@ -1,14 +1,11 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
 #include "C4EGameMode.generated.h"
 
-/**
- * 
- */
+class UGameRule;
+
 UCLASS(Abstract)
 class BEANSPELLS_API AC4EGameMode : public AGameMode
 {
@@ -28,9 +25,19 @@ protected:
 	TArray<TObjectPtr<AController>> _playerControllers;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "MatchManage")
 	int _countdownTimer;
+
+	int _gameRulesLeft;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TMap<TObjectPtr<UGameRule>, bool> _gameRuleManagers;
+	
 	FTimerHandle _timerDecreaseCountdown;
 	UFUNCTION()
 	void DecreaseCountdown();
+	UFUNCTION()
+	void Handle_GameRuleCompleted(UGameRule* rule);
+	
+	UFUNCTION()
+	void Handle_GameRulePointsScored(AController* scorer, int points);
 
 	virtual void BeginPlay() override;
 

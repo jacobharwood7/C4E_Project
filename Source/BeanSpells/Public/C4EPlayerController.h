@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "C4EPlayerController.generated.h"
 
+class UWidgetScore;
 class UInputMappingContext;
 
 UCLASS(Abstract)
@@ -20,10 +21,18 @@ public:
 	virtual void Handle_MatchStarted_Implementation() override;
 	virtual void Handle_MatchEnded_Implementation() override;
 
+	void AddScore(int amount);
+	
 protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<APawn> _pawnToSpawn;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UWidgetScore> _scoreWidgetClass;
+	TObjectPtr<UWidgetScore> _scoreWidget;
+
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UInputMappingContext> _defaultMappingContext;
+
+	int _score;
 };

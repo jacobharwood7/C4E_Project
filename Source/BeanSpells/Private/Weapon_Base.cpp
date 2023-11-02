@@ -25,7 +25,6 @@ bool AWeapon_Base::Fire_Implementation()
 void AWeapon_Base::Init(UWeaponType* type)
 {
 	_typeData = type;
-	_Mesh->SetSkeletalMesh(_typeData->_weaponMesh);
 }
 
 void AWeapon_Base::BeginPlay()

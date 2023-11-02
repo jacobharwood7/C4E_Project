@@ -31,7 +31,7 @@ void UHealth::DamageTaken(AActor* damagedActor, float damage, const UDamageType*
 
 	if(leftOverDamage>0.0f){_currentHealth = FMath::Max(_currentHealth-leftOverDamage,0.0f);}
 
-	if(_currentHealth<=0.0f){OnComponentDead.Broadcast(instigator);}
+	if(_currentHealth<=0.0f){OnDead.Broadcast(instigator);}
 }
 
 // Called every frame

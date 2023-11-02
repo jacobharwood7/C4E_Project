@@ -13,10 +13,7 @@ UCLASS(BlueprintType)
 class BEANSPELLS_API UWeaponType : public UDataAsset
 {
 	GENERATED_BODY()
-public:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TObjectPtr<USkeletalMesh> _weaponMesh;
-	
+public:	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float _damage;
 };

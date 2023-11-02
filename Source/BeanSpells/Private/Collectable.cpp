@@ -6,6 +6,7 @@
 
 ACollectable::ACollectable()
 {
+	_pointsValue = 1;
 	_collision =CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 	RootComponent = _collision;
 }

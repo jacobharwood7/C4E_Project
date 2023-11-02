@@ -20,7 +20,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY(BlueprintAssignable,Category = "Components")
-	FComponentDeadSignature OnComponentDead;
+	FComponentDeadSignature OnDead;
 	
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Health")
