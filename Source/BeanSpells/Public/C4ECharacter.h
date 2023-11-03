@@ -13,7 +13,6 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class AWeapon_Base;
-
 UCLASS(Abstract)
 class BEANSPELLS_API AC4ECharacter : public ACharacter
 {
@@ -44,7 +43,7 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TSubclassOf<AWeapon_Base> _DefaultWeapon;
+	TSubclassOf<AWeapon_Base> _CurrentWeapon;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<UWeaponType> _DefaultWeaponType;

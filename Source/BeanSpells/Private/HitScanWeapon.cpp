@@ -21,9 +21,8 @@ bool AHitScanWeapon::Fire_Implementation()
 	
 
 	if(UKismetSystemLibrary::LineTraceSingle(GetWorld(),Origin,End,UEngineTypes::ConvertToTraceType(ECC_Visibility)
-		,true,{this,GetOwner()},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,1.0f))
+		,true,{this,GetOwner()},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,0.3f))
 	{
-		UE_LOG(LogScan, Display, TEXT("Hit position: %s"),*Hit.ImpactPoint.ToString())
 		if(Hit.GetActor()->CanBeDamaged())
 		{
 			UGameplayStatics::ApplyDamage(Hit.GetActor(),_typeData->_damage,nullptr,this,UDamageType::StaticClass());
