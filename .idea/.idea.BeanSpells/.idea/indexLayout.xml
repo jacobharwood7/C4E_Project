@@ -2,7 +2,14 @@
 <project version="4">
   <component name="UserContentModel">
     <attachedFolders />
-    <explicitIncludes />
+    <explicitIncludes>
+      <Path>Source/BeanSpells/Private/BTTask_FindRandomLocation.cpp</Path>
+      <Path>Source/BeanSpells/Private/C4EAICharacter.cpp</Path>
+      <Path>Source/BeanSpells/Private/C4EAIController.cpp</Path>
+      <Path>Source/BeanSpells/Public/BTTask_FindRandomLocation.h</Path>
+      <Path>Source/BeanSpells/Public/C4EAICharacter.h</Path>
+      <Path>Source/BeanSpells/Public/C4EAIController.h</Path>
+    </explicitIncludes>
     <explicitExcludes />
   </component>
 </project>
