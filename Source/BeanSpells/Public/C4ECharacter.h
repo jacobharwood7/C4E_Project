@@ -44,9 +44,6 @@ public:
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<AWeapon_Base> _CurrentWeapon;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TObjectPtr<UWeaponType> _DefaultWeaponType;
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<AActor> _FireableRef;

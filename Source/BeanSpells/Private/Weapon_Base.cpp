@@ -18,13 +18,13 @@ AWeapon_Base::AWeapon_Base()
 
 bool AWeapon_Base::Fire_Implementation()
 {
-	UE_LOG(LogWeapon, Display, TEXT("FIRING WEAPON CLASS"));
 	return true;
 }
 
 void AWeapon_Base::Init(UWeaponType* type)
 {
 	_typeData = type;
+
 }
 
 void AWeapon_Base::BeginPlay()

@@ -73,6 +73,8 @@ void AC4EGameMode::Handle_GameRuleCompleted(UGameRule* rule)
 
 void AC4EGameMode::Handle_GameRulePointsScored(AController* scorer, int points)
 {
+	
+	UE_LOG(LogTemp,Display,TEXT("POINT to gryffindor"))
 	AC4EPlayerController* castedPC = Cast<AC4EPlayerController>(scorer);
 	if(castedPC)
 	{
