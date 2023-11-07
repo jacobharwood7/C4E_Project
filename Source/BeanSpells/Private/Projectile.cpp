@@ -1,12 +1,14 @@
 ﻿#include "Projectile.h"
 
-#include "Chaos/GeometryParticlesfwd.h"
+#include "ProjectileWeapon.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AProjectile::AProjectile() 
 {
+	_damage = 50.0f;
+	
 	// Use a sphere as a simple collision representation
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	CollisionComp->InitSphereRadius(5.0f);
@@ -37,8 +39,9 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		UGameplayStatics::ApplyDamage(OtherActor,50.0f,GetInstigatorController(),this,UDamageType::StaticClass());
-		
+		UGameplayStatics::ApplyDamage(OtherActor,_damage,GetInstigatorController(),this,UDamageType::StaticClass());
+		UE_LOG(LogTemp,Display,TEXT("Owner is %s"),*Owner->GetName());
+
 		if(OtherComp->IsSimulatingPhysics())
 		{
 			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());

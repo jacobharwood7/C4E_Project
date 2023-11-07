@@ -24,7 +24,7 @@ bool AHitScanWeapon::Fire_Implementation()
 	{
 		if(Hit.GetActor()->CanBeDamaged())
 		{
-			UGameplayStatics::ApplyDamage(Hit.GetActor(),_typeData->_damage,this->GetInstigatorController(),this,UDamageType::StaticClass());
+			UGameplayStatics::ApplyDamage(Hit.GetActor(),_typeData->_damage,GetInstigatorController(),this,UDamageType::StaticClass());
 		}
 		return true;
 	}
