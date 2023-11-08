@@ -48,6 +48,8 @@ void AC4ECharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		UEIP->BindAction(LookAction,ETriggerEvent::Triggered,this,&AC4ECharacter::Look);
 		
 		UEIP->BindAction(ShootAction,ETriggerEvent::Triggered,this,&AC4ECharacter::Shoot);
+		
+		UEIP->BindAction(PauseAction,ETriggerEvent::Triggered,this,&AC4ECharacter::Pause);
 	}
 }
 
@@ -80,4 +82,10 @@ void AC4ECharacter::Shoot()
 	{
 		IFireable::Execute_Fire(_FireableRef);
 	}
+}
+
+void AC4ECharacter::Pause()
+{
+	
+	OnPause.Broadcast();
 }

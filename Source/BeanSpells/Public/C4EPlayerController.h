@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "C4EPlayerController.generated.h"
 
+class UWidgetPause;
 class UWidgetScore;
 class UInputMappingContext;
 
@@ -21,6 +22,10 @@ public:
 	virtual void Handle_MatchStarted_Implementation() override;
 	virtual void Handle_MatchEnded_Implementation() override;
 
+	UFUNCTION()
+	void Handle_Paused();
+	
+
 	void AddScore(int amount);
 	
 protected:
@@ -30,6 +35,10 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UWidgetScore> _scoreWidgetClass;
 	TObjectPtr<UWidgetScore> _scoreWidget;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UWidgetPause> _pauseWidgetClass;
+	TObjectPtr<UWidgetPause> _pauseWidget;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UInputMappingContext> _defaultMappingContext;

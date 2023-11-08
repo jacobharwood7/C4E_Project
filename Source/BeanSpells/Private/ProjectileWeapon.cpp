@@ -2,7 +2,6 @@
 
 #include "WeaponType.h"
 #include "Components/ArrowComponent.h"
-#include "EntitySystem/MovieSceneEntitySystemRunner.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogProj, Display, All);
 

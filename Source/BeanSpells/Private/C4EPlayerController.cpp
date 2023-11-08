@@ -3,6 +3,7 @@
 #include "C4ECharacter.h"
 #include "EnhancedInputSubsystems.h"
 #include "WidgetScore.h"
+#include "WidgetPause.h"
 #include "GameFramework/GameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -46,6 +47,7 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 	{
 		//TODO: Bind to any relevant events
 		castedPawn->Init();
+		castedPawn->OnPause.AddUniqueDynamic(this,&AC4EPlayerController::Handle_Paused);
 	}
 
 	IMatchStateHandler::Handle_MatchStarted_Implementation();
@@ -53,7 +55,7 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 
 void AC4EPlayerController::Handle_MatchEnded_Implementation()
 {
-	//SetInputMode(FInputModeUIOnly());
+	SetInputMode(FInputModeUIOnly());
 }
 
 void AC4EPlayerController::AddScore(int amount)
@@ -63,4 +65,17 @@ void AC4EPlayerController::AddScore(int amount)
 	{
 		_scoreWidget->UpdateScore(_score);
 	}
+}
+
+void AC4EPlayerController::Handle_Paused()
+{
+	if(_pauseWidgetClass)
+	{
+		_pauseWidget = CreateWidget<UWidgetPause,AC4EPlayerController*>(this,_pauseWidgetClass);
+		_pauseWidget->AddToViewport();
+		SetShowMouseCursor(true);
+		SetInputMode(FInputModeUIOnly());
+		UGameplayStatics::SetGamePaused(GetWorld(),true);
+	}
+	
 }

@@ -13,6 +13,9 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class AWeapon_Base;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPause);
+
 UCLASS(Abstract)
 class BEANSPELLS_API AC4ECharacter : public ACharacter
 {
@@ -34,12 +37,17 @@ class BEANSPELLS_API AC4ECharacter : public ACharacter
 	UInputAction* LookAction;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
 	UInputAction* ShootAction;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
+	UInputAction* PauseAction;
 
 
 public:
 	AC4ECharacter();
 	UFUNCTION(BlueprintNativeEvent)
 	void Init();
+
+	FPause OnPause;
 
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
@@ -52,6 +60,7 @@ protected:
 	void Look(const FInputActionValue& value);
 
 	void Shoot();
+	void Pause();
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };
