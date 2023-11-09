@@ -5,6 +5,8 @@
 
 #include "C4EPlayerController.h"
 #include "GameRule.h"
+#include "Blueprint/UserWidget.h"
+#include "WidgetMainMenu.h"
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
@@ -43,20 +45,6 @@ void AC4EGameMode::Logout(AController* Exiting)
 {
 	_playerControllers.Remove(Exiting);
 	Super::Logout(Exiting);
-}
-
-void AC4EGameMode::DecreaseCountdown()
-{
-	_countdownTimer--;
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red, FString::Printf(TEXT("%d"),_countdownTimer));
-	if(_countdownTimer<=0)
-	{
-		StartMatch();
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().SetTimer(_timerDecreaseCountdown, this, &AC4EGameMode::DecreaseCountdown,1.5f,false);
-	}
 }
 
 void AC4EGameMode::Handle_GameRuleCompleted(UGameRule* rule)
@@ -108,7 +96,20 @@ void AC4EGameMode::BeginPlay()
 
 void AC4EGameMode::HandleMatchIsWaitingToStart()
 {
-	GetWorld()->GetTimerManager().SetTimer(_timerDecreaseCountdown, this, &AC4EGameMode::DecreaseCountdown,1.5f,false);
+	
+	//create main menu widget
+	if(_menuWidgetClass)
+	{
+		AC4EPlayerController* PC = Cast<AC4EPlayerController>(_playerControllers[0]);
+		PC->SetInitialLocationAndRotation(menuPoint->GetActorLocation(),menuPoint->GetActorRotation());
+		_menuWidget = CreateWidget<UWidgetMainMenu,AC4EPlayerController*>(PC,_menuWidgetClass);
+		_menuWidget->AddToViewport();
+		PC->SetShowMouseCursor(true);
+		PC->SetInputMode(FInputModeUIOnly());
+
+		_menuWidget->OnStart.AddUniqueDynamic(this,&AGameMode::StartMatch);
+	}
+	UE_LOG(LogTemp,Display,TEXT("Waitingtostart"));
 	Super::HandleMatchIsWaitingToStart();
 }
 

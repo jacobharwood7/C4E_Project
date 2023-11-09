@@ -86,6 +86,5 @@ void AC4ECharacter::Shoot()
 
 void AC4ECharacter::Pause()
 {
-	
 	OnPause.Broadcast();
 }

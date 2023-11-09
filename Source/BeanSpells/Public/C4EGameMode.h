@@ -4,6 +4,7 @@
 #include "GameFramework/GameMode.h"
 #include "C4EGameMode.generated.h"
 
+class UWidgetMainMenu;
 class UGameRule;
 
 UCLASS(Abstract)
@@ -11,6 +12,10 @@ class BEANSPELLS_API AC4EGameMode : public AGameMode
 {
 	GENERATED_BODY()
 public:
+
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<AActor> menuPoint;
+	
 	AC4EGameMode();
 
 	virtual AActor* FindPlayerStart_Implementation(AController* Player, const FString& IncomingName) override;
@@ -18,6 +23,9 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* Exiting) override;
 protected:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UWidgetMainMenu> _menuWidgetClass;
+	TObjectPtr<UWidgetMainMenu> _menuWidget;
 	
 	TArray<TObjectPtr<AActor>> _playerStarts;
 
@@ -31,8 +39,6 @@ protected:
 	TMap<TObjectPtr<UGameRule>, bool> _gameRuleManagers;
 	
 	FTimerHandle _timerDecreaseCountdown;
-	UFUNCTION()
-	void DecreaseCountdown();
 	UFUNCTION()
 	void Handle_GameRuleCompleted(UGameRule* rule);
 	
