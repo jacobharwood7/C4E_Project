@@ -7,6 +7,7 @@
 #include "WidgetScore.h"
 #include "WidgetPause.h"
 #include "GameFramework/GameModeBase.h"
+#include "Interface_Input.h"
 #include "Kismet/GameplayStatics.h"
 
 

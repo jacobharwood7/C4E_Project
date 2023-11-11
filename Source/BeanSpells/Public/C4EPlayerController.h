@@ -20,7 +20,7 @@ public:
 	TSoftObjectPtr<UInputAsset> _inputActions;
 	
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AC4ECharacter> _pawnToSpawn;
+	TSubclassOf<APawn> _pawnToSpawn;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UInputMappingContext> _mappingContext;
