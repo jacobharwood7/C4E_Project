@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Interface_Input.h"
 #include "C4ECharacter.generated.h"
 
 
@@ -15,10 +16,8 @@ class UInputMappingContext;
 class UInputAction;
 class AWeapon_Base;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPause);
-
 UCLASS(Abstract)
-class BEANSPELLS_API AC4ECharacter : public ACharacter
+class BEANSPELLS_API AC4ECharacter : public ACharacter, public IInterface_Input
 {
 	GENERATED_BODY()
 
@@ -30,25 +29,17 @@ class BEANSPELLS_API AC4ECharacter : public ACharacter
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
 	UInputMappingContext* PlayerMappingContext;
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
-	UInputAction* MoveAction;
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
-	UInputAction* ShootAction;
-	
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
-	UInputAction* PauseAction;
-
 
 public:
 	AC4ECharacter();
 	UFUNCTION(BlueprintNativeEvent)
 	void Init();
-
-	FPause OnPause;
+	virtual void Move_Implementation(const FInputActionValue& Input) override;
+	virtual void Look_Implementation(const FInputActionValue& Input) override;
+	virtual void Shoot_Implementation() override;
+	virtual void Jump_Implementation() override;
+	virtual void StopJump_Implementation() override;
+	
 
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
@@ -62,14 +53,4 @@ protected:
 
 	UFUNCTION()
 	void SetupStimulusSource();
-
-	
-
-	void Move(const FInputActionValue& value);
-	void Look(const FInputActionValue& value);
-
-	void Shoot();
-	void Pause();
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

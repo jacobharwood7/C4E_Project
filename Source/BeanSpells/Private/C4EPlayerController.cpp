@@ -1,7 +1,9 @@
 ﻿#include "C4EPlayerController.h"
 
 #include "C4ECharacter.h"
+#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputAsset.h"
 #include "WidgetScore.h"
 #include "WidgetPause.h"
 #include "GameFramework/GameModeBase.h"
@@ -17,7 +19,11 @@ void AC4EPlayerController::Init_Implementation()
 {
 	if(UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(_defaultMappingContext, 0);
+		if(_mappingContext)
+		{
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext(_mappingContext, 0);
+		}
 	}
 
 	if(GetPawn()!=nullptr)
@@ -29,6 +35,24 @@ void AC4EPlayerController::Init_Implementation()
 	{
 		_scoreWidget = CreateWidget<UWidgetScore,AC4EPlayerController*>(this,_scoreWidgetClass);
 		_scoreWidget->AddToViewport();
+	}
+}
+
+void AC4EPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	if(UEnhancedInputComponent* UEIP= CastChecked<UEnhancedInputComponent>(InputComponent))
+	{
+		if(_inputActions.LoadSynchronous())
+		{
+			UEIP->BindAction(_inputActions->JumpAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Jump);
+			UEIP->BindAction(_inputActions->JumpAction.LoadSynchronous(),ETriggerEvent::Completed,this,&AC4EPlayerController::StopJump);
+			UEIP->BindAction(_inputActions->MoveAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Move);
+			UEIP->BindAction(_inputActions->LookAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Look);
+			UEIP->BindAction(_inputActions->ShootAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Shoot);
+			
+			UEIP->BindAction(_inputActions->PauseAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_Paused);
+		}
 	}
 }
 
@@ -47,7 +71,6 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 	{
 		//TODO: Bind to any relevant events
 		castedPawn->Init();
-		castedPawn->OnPause.AddUniqueDynamic(this,&AC4EPlayerController::Handle_Paused);
 	}
 
 	IMatchStateHandler::Handle_MatchStarted_Implementation();
@@ -65,6 +88,39 @@ void AC4EPlayerController::AddScore(int amount)
 	{
 		_scoreWidget->UpdateScore(_score);
 	}
+}
+
+void AC4EPlayerController::Move(const FInputActionValue& Input)
+{
+	auto interface_ = Cast<IInterface_Input>(_pawnToSpawn);
+	if(interface_)
+	{
+		IInterface_Input::Execute_Move(_pawnToSpawn, Input);
+	}
+}
+
+void AC4EPlayerController::Look(const FInputActionValue& Input)
+{
+	auto interface_ = Cast<IInterface_Input>(_pawnToSpawn);
+	if(interface_)
+	{
+		IInterface_Input::Execute_Look(_pawnToSpawn, Input);
+	}
+}
+
+void AC4EPlayerController::Shoot()
+{
+	IInterface_Input::Execute_Shoot(_pawnToSpawn);
+}
+
+void AC4EPlayerController::Jump()
+{
+	IInterface_Input::Execute_Jump(_pawnToSpawn);
+}
+
+void AC4EPlayerController::StopJump()
+{
+	IInterface_Input::Execute_StopJump(_pawnToSpawn);
 }
 
 void AC4EPlayerController::Handle_Paused()

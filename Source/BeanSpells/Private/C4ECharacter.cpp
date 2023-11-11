@@ -5,7 +5,6 @@
 #include "EnhancedInputComponent.h"
 #include "Fireable.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "EnhancedInputSubsystems.h"
 #include "Weapon_Base.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
@@ -24,6 +23,60 @@ AC4ECharacter::AC4ECharacter()
 	SetupStimulusSource();
 }
 
+void AC4ECharacter::Move_Implementation(const FInputActionValue& Input)
+{
+	if(Controller)
+	{
+		UE_LOG(LogTemp,Display,TEXT("MOVE ATTEMPT BELIEVE ME"))
+		FVector2d movementVector = Input.Get<FVector2D>();
+		
+		AddMovementInput(GetActorForwardVector(),movementVector.Y);
+		AddMovementInput(GetActorRightVector(),movementVector.X);
+		
+	}
+}
+
+void AC4ECharacter::Look_Implementation(const FInputActionValue& Input)
+{
+	if(Controller)
+	{
+		UE_LOG(LogTemp,Display,TEXT("LOOK ATTEMPT BELIEVE ME"))
+
+		FVector2d LookAxisVector = Input.Get<FVector2d>();
+	
+		AddControllerYawInput(LookAxisVector.X);
+		AddControllerPitchInput(LookAxisVector.Y);
+		
+	}
+}
+
+void AC4ECharacter::Shoot_Implementation()
+{
+	if(Controller)
+	{
+		if (_FireableRef)
+		{
+			IFireable::Execute_Fire(_FireableRef);
+		}
+	}
+}
+
+void AC4ECharacter::Jump_Implementation()
+{
+	if(Controller)
+	{
+		Super::Jump();
+	}
+}
+
+void AC4ECharacter::StopJump_Implementation()
+{
+	if(Controller)
+	{
+		Super::StopJumping();
+	}
+}
+
 void AC4ECharacter::Init_Implementation()
 {
 	if(_CurrentWeapon)
@@ -40,23 +93,6 @@ void AC4ECharacter::Init_Implementation()
 	}
 }
 
-void AC4ECharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
- {
-	if(UEnhancedInputComponent* UEIP= CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		UEIP->BindAction(JumpAction,ETriggerEvent::Triggered,this,&ACharacter::Jump);
-		UEIP->BindAction(JumpAction,ETriggerEvent::Completed,this,&ACharacter::StopJumping);
-		
-		UEIP->BindAction(MoveAction,ETriggerEvent::Triggered,this,&AC4ECharacter::Move);
-		
-		UEIP->BindAction(LookAction,ETriggerEvent::Triggered,this,&AC4ECharacter::Look);
-		
-		UEIP->BindAction(ShootAction,ETriggerEvent::Triggered,this,&AC4ECharacter::Shoot);
-		
-		UEIP->BindAction(PauseAction,ETriggerEvent::Triggered,this,&AC4ECharacter::Pause);
-	}
-}
-
 
 void AC4ECharacter::SetupStimulusSource()
 {
@@ -66,38 +102,4 @@ void AC4ECharacter::SetupStimulusSource()
 		stimSource->RegisterForSense(TSubclassOf<UAISense_Sight>());//register this stimulus for the sight system
 		stimSource->RegisterWithPerceptionSystem();//register this stimulus with the perception system
 	}
-}
-
-void AC4ECharacter::Move(const FInputActionValue& value)
-{
-	FVector2d movementVector = value.Get<FVector2D>();
-	if (Controller!=nullptr)
-	{
-		AddMovementInput(GetActorForwardVector(),movementVector.Y);
-		AddMovementInput(GetActorRightVector(),movementVector.X);
-
-	}
-}
-
-void AC4ECharacter::Look(const FInputActionValue& value)
-{
-	FVector2d LookAxisVector = value.Get<FVector2d>();
-	if (Controller!=nullptr)
-	{
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-	}
-}
-
-void AC4ECharacter::Shoot()
-{
-	if (_FireableRef)
-	{
-		IFireable::Execute_Fire(_FireableRef);
-	}
-}
-
-void AC4ECharacter::Pause()
-{
-	OnPause.Broadcast();
 }
