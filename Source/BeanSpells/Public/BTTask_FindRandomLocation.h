@@ -18,5 +18,5 @@ public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AI")
-	float _searchRadius = 15000.0f;
+	float _searchRadius = 1500.0f;
 };

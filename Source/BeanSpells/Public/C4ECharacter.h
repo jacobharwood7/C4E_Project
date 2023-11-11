@@ -8,6 +8,7 @@
 #include "C4ECharacter.generated.h"
 
 
+class UAIPerceptionStimuliSourceComponent;
 class UWeaponType;
 class UCameraComponent;
 class UInputMappingContext;
@@ -55,6 +56,14 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<AActor> _FireableRef;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	TObjectPtr<UAIPerceptionStimuliSourceComponent> stimSource;
+
+	UFUNCTION()
+	void SetupStimulusSource();
+
+	
 
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);

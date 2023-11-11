@@ -6,6 +6,9 @@
 #include "AIController.h"
 #include "C4EAIController.generated.h"
 
+struct FAIStimulus;
+class UAISenseConfig_Sight;
+
 UCLASS()
 class BEANSPELLS_API AC4EAIController : public AAIController
 {
@@ -13,9 +16,19 @@ class BEANSPELLS_API AC4EAIController : public AAIController
 	
 	
 protected:
-	AC4EAIController();
 
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	TObjectPtr<UAISenseConfig_Sight> sightConfig;
+
+	AC4EAIController();
+	
 	UFUNCTION()
 	virtual void OnPossess(APawn* InPawn) override;
+
+	UFUNCTION()
+	void SetUpPerceptionSystem();
+
+	UFUNCTION()
+	void OnTargetDetected(AActor* Actor, FAIStimulus stimulus);
 	
 };

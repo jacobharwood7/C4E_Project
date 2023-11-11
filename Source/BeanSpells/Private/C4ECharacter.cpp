@@ -7,6 +7,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "EnhancedInputSubsystems.h"
 #include "Weapon_Base.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 AC4ECharacter::AC4ECharacter()
 {
@@ -18,6 +20,8 @@ AC4ECharacter::AC4ECharacter()
 
 	_weaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponAttachPoint"));
 	_weaponAttachPoint->SetupAttachment(_camera);
+
+	SetupStimulusSource();
 }
 
 void AC4ECharacter::Init_Implementation()
@@ -54,6 +58,15 @@ void AC4ECharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 }
 
 
+void AC4ECharacter::SetupStimulusSource()
+{
+	stimSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
+	if(stimSource)
+	{
+		stimSource->RegisterForSense(TSubclassOf<UAISense_Sight>());//register this stimulus for the sight system
+		stimSource->RegisterWithPerceptionSystem();//register this stimulus with the perception system
+	}
+}
 
 void AC4ECharacter::Move(const FInputActionValue& value)
 {

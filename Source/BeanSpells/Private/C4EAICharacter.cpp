@@ -16,6 +16,11 @@ AC4EAICharacter::AC4EAICharacter()
 	_weaponAttachPoint->SetupAttachment(GetCapsuleComponent());
 }
 
+UBehaviorTree* AC4EAICharacter::GetBehaviourTree()
+{
+	return _behaviourTree;
+}
+
 void AC4EAICharacter::Init_Implementation()
 {
 	if(_CurrentWeapon)

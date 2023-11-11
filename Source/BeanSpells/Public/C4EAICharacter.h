@@ -34,15 +34,17 @@ class BEANSPELLS_API AC4EAICharacter : public ACharacter
 	
 public:
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "AI")
-	UBehaviorTree* _behaviourTree;
 	
 	AC4EAICharacter();
 
 	UFUNCTION(BlueprintNativeEvent)
 	void Init();
-	
+
+	UBehaviorTree* GetBehaviourTree();	
 protected:
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "AI",meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<UBehaviorTree> _behaviourTree;
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<AWeapon_Base> _CurrentWeapon;
 
