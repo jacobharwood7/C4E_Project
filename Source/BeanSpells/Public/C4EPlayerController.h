@@ -20,12 +20,13 @@ public:
 	TSoftObjectPtr<UInputAsset> _inputActions;
 	
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<APawn> _pawnToSpawn;
+	TSubclassOf<AActor> _pawnToSpawn;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Input",meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UInputMappingContext> _mappingContext;
-
-
+	
+	TObjectPtr<APawn> _tempPawn;
+	
 	void Move(const FInputActionValue& Input);
 	void Look(const FInputActionValue& Input);
 	void Shoot();

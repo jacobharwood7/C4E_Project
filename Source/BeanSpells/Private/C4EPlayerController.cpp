@@ -66,9 +66,9 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 	FActorSpawnParameters spawnParams;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	APawn* tempPawn = World->SpawnActor<APawn>(_pawnToSpawn,spawnLocation,spawnRotation,spawnParams);
-	Possess(tempPawn);
-	if(AC4ECharacter* castedPawn = Cast<AC4ECharacter>(tempPawn))
+	_tempPawn = World->SpawnActor<APawn>(_pawnToSpawn,spawnLocation,spawnRotation,spawnParams);
+	Possess(_tempPawn);
+	if(AC4ECharacter* castedPawn = Cast<AC4ECharacter>(_tempPawn))
 	{
 		//TODO: Bind to any relevant events
 		castedPawn->Init();
@@ -93,35 +93,27 @@ void AC4EPlayerController::AddScore(int amount)
 
 void AC4EPlayerController::Move(const FInputActionValue& Input)
 {
-	auto interface_ = Cast<IInterface_Input>(_pawnToSpawn);
-	if(interface_)
-	{
-		IInterface_Input::Execute_Move(_pawnToSpawn, Input);
-	}
+	IInterface_Input::Execute_Move(_tempPawn, Input);
 }
 
 void AC4EPlayerController::Look(const FInputActionValue& Input)
-{
-	auto interface_ = Cast<IInterface_Input>(_pawnToSpawn);
-	if(interface_)
-	{
-		IInterface_Input::Execute_Look(_pawnToSpawn, Input);
-	}
+{	
+	IInterface_Input::Execute_Look(_tempPawn, Input);
 }
 
 void AC4EPlayerController::Shoot()
 {
-	IInterface_Input::Execute_Shoot(_pawnToSpawn);
+	IInterface_Input::Execute_Shoot(_tempPawn);
 }
 
 void AC4EPlayerController::Jump()
 {
-	IInterface_Input::Execute_Jump(_pawnToSpawn);
+	IInterface_Input::Execute_Jump(_tempPawn);
 }
 
 void AC4EPlayerController::StopJump()
 {
-	IInterface_Input::Execute_StopJump(_pawnToSpawn);
+	IInterface_Input::Execute_StopJump(_tempPawn);
 }
 
 void AC4EPlayerController::Handle_Paused()
