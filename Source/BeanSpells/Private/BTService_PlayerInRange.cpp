@@ -24,4 +24,5 @@ void UBTService_PlayerInRange::OnBecomeRelevant(UBehaviorTreeComponent& OwnerCom
 	ACharacter* player = UGameplayStatics::GetPlayerCharacter(GetWorld(),0);
 	
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(),npc->GetDistanceTo(player)<=_spellRange);
+	UE_LOG(LogTemp, Display, TEXT("In range is set to %hhd"), (npc->GetDistanceTo(player)<=_spellRange))
 }

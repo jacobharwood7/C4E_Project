@@ -41,8 +41,8 @@ void AC4EAIController::SetUpPerceptionSystem()
 	{
 		UE_LOG(LogTemp, Display,TEXT("Perception System created"));
 		SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component")));
-		sightConfig->SightRadius = 5000.0f;//how far ai can see
-		sightConfig->LoseSightRadius = sightConfig->SightRadius+50.0f;//how far player must be to not be seen
+		sightConfig->SightRadius = 2000.0f;//how far ai can see
+		sightConfig->LoseSightRadius = sightConfig->SightRadius+500.0f;//how far player must be to not be seen
 		sightConfig->PeripheralVisionAngleDegrees=90.0f;//fov of the ai.
 		sightConfig->SetMaxAge(5.0f);//time after the perceived stimulus is forgotten, ie looks again;
 		sightConfig->AutoSuccessRangeFromLastSeenLocation = 520.0f;//continue to see stimulus if stays within range of last seen location but can't actually see
