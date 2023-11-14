@@ -14,7 +14,6 @@ class BEANSPELLS_API AC4EAIController : public AAIController
 {
 	GENERATED_BODY()
 	
-	
 protected:
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)

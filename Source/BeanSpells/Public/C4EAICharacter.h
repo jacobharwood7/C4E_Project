@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Interface_Input.h"
 #include "C4EAICharacter.generated.h"
 
 
@@ -14,23 +15,12 @@ class UBehaviorTree;
 
 
 UCLASS(Abstract)
-class BEANSPELLS_API AC4EAICharacter : public ACharacter
+class BEANSPELLS_API AC4EAICharacter : public ACharacter, public IInterface_Input
 {
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
 	TObjectPtr<USceneComponent> _weaponAttachPoint;
-
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
-	UInputMappingContext* PlayerMappingContext;
-
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
-	UInputAction* MoveAction;
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
-	UInputAction* ShootAction;
-
 	
 public:
 
@@ -40,7 +30,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void Init();
 
-	UBehaviorTree* GetBehaviourTree();	
+	UBehaviorTree* GetBehaviourTree();
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "AI",meta =(AllowPrivateAccess = "true"))
 	TObjectPtr<UBehaviorTree> _behaviourTree;
@@ -53,13 +43,11 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<AActor> _FireableRef;
-
-	void Move(const FInputActionValue& value);
-	void Look(const FInputActionValue& value);
-
-	void Shoot();
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	virtual void Move_Implementation(const FInputActionValue& Input) override;
+	virtual void Look_Implementation(const FInputActionValue& Input) override;
+	virtual void Shoot_Implementation() override;
+	
 
 
 	

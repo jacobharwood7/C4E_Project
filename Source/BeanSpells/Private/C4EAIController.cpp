@@ -22,6 +22,7 @@ void AC4EAIController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	if (AC4EAICharacter* AI = Cast<AC4EAICharacter>(InPawn))
 	{
+		AI->Init_Implementation();
 		UBlackboardComponent* bc;
 		UseBlackboard(AI->GetBehaviourTree()->BlackboardAsset,bc);
 		Blackboard = bc;
@@ -40,7 +41,7 @@ void AC4EAIController::SetUpPerceptionSystem()
 	{
 		UE_LOG(LogTemp, Display,TEXT("Perception System created"));
 		SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component")));
-		sightConfig->SightRadius = 500.0f;//how far ai can see
+		sightConfig->SightRadius = 5000.0f;//how far ai can see
 		sightConfig->LoseSightRadius = sightConfig->SightRadius+50.0f;//how far player must be to not be seen
 		sightConfig->PeripheralVisionAngleDegrees=90.0f;//fov of the ai.
 		sightConfig->SetMaxAge(5.0f);//time after the perceived stimulus is forgotten, ie looks again;

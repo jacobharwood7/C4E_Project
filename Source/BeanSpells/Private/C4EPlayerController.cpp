@@ -80,6 +80,7 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 void AC4EPlayerController::Handle_MatchEnded_Implementation()
 {
 	SetInputMode(FInputModeUIOnly());
+	SetShowMouseCursor(true);
 }
 
 void AC4EPlayerController::AddScore(int amount)

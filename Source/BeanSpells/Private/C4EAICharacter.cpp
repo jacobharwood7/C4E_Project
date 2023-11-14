@@ -38,19 +38,8 @@ void AC4EAICharacter::Init_Implementation()
 	}
 }
 
-void AC4EAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	if(UEnhancedInputComponent* UEIP= CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
-	{		
-		UEIP->BindAction(MoveAction,ETriggerEvent::Triggered,this,&AC4EAICharacter::Move);
-		
-		UEIP->BindAction(LookAction,ETriggerEvent::Triggered,this,&AC4EAICharacter::Look);
-		
-		UEIP->BindAction(ShootAction,ETriggerEvent::Triggered,this,&AC4EAICharacter::Shoot);
-	}}
 
-
-void AC4EAICharacter::Move(const FInputActionValue& value)
+void AC4EAICharacter::Move_Implementation(const FInputActionValue& value)
 {
 	FVector2d movementVector = value.Get<FVector2D>();
 	if (Controller!=nullptr)
@@ -60,7 +49,7 @@ void AC4EAICharacter::Move(const FInputActionValue& value)
 	}
 }
 
-void AC4EAICharacter::Look(const FInputActionValue& value)
+void AC4EAICharacter::Look_Implementation(const FInputActionValue& value)
 {
 	FVector2d LookAxisVector = value.Get<FVector2d>();
 	if (Controller!=nullptr)
@@ -70,7 +59,7 @@ void AC4EAICharacter::Look(const FInputActionValue& value)
 	}
 }
 
-void AC4EAICharacter::Shoot()
+void AC4EAICharacter::Shoot_Implementation()
 {
 	if (_FireableRef)
 	{
