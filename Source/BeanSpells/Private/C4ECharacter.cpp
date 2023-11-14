@@ -27,7 +27,6 @@ void AC4ECharacter::Move_Implementation(const FInputActionValue& Input)
 {
 	if(Controller)
 	{
-		UE_LOG(LogTemp,Display,TEXT("MOVE ATTEMPT BELIEVE ME"))
 		FVector2d movementVector = Input.Get<FVector2D>();
 		
 		AddMovementInput(GetActorForwardVector(),movementVector.Y);
@@ -40,7 +39,6 @@ void AC4ECharacter::Look_Implementation(const FInputActionValue& Input)
 {
 	if(Controller)
 	{
-		UE_LOG(LogTemp,Display,TEXT("LOOK ATTEMPT BELIEVE ME"))
 
 		FVector2d LookAxisVector = Input.Get<FVector2d>();
 	
