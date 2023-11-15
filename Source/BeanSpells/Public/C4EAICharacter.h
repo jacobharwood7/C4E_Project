@@ -7,6 +7,7 @@
 #include "C4EAICharacter.generated.h"
 
 
+class UTarget;
 class UWeaponType;
 class UInputMappingContext;
 class UInputAction;
@@ -23,7 +24,8 @@ class BEANSPELLS_API AC4EAICharacter : public ACharacter, public IInterface_Inpu
 	TObjectPtr<USceneComponent> _weaponAttachPoint;
 	
 public:
-
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<UTarget> _target;
 	
 	AC4EAICharacter();
 
@@ -47,8 +49,4 @@ protected:
 	virtual void Move_Implementation(const FInputActionValue& Input) override;
 	virtual void Look_Implementation(const FInputActionValue& Input) override;
 	virtual void Shoot_Implementation() override;
-	
-
-
-	
 };

@@ -9,7 +9,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogProj, Display, All);
 bool AProjectileWeapon::Fire_Implementation()
 {
 	_typeData->_damage;
-	UE_LOG(LogProj,Display, TEXT("FIRING PROJECTILE CLASS"))
 
 	UWorld* const world=GetWorld();
 

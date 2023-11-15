@@ -4,6 +4,7 @@
 #include "GameFramework/GameMode.h"
 #include "C4EGameMode.generated.h"
 
+class AC4EAICharacter;
 class UWidgetMainMenu;
 class UGameRule;
 
@@ -15,6 +16,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSoftObjectPtr<AActor> menuPoint;
+	TSoftObjectPtr<AActor> spawnPoint;
+	
 	
 	AC4EGameMode();
 
@@ -37,6 +40,9 @@ protected:
 	int _gameRulesLeft;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TMap<TObjectPtr<UGameRule>, bool> _gameRuleManagers;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<AC4EAICharacter> AI;
 	
 	FTimerHandle _timerDecreaseCountdown;
 	UFUNCTION()

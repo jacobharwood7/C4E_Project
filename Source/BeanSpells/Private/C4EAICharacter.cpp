@@ -4,7 +4,7 @@
 #include "EnhancedInputComponent.h"
 #include "Fireable.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "EnhancedInputSubsystems.h"
+#include "Target.h"
 #include "Weapon_Base.h"
 
 
@@ -14,6 +14,7 @@ AC4EAICharacter::AC4EAICharacter()
 	GetCapsuleComponent()->InitCapsuleSize(55.0f,96.0f);
 	_weaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponAttachPoint"));
 	_weaponAttachPoint->SetupAttachment(GetCapsuleComponent());
+	_target = CreateDefaultSubobject<UTarget>(TEXT("Target"));
 }
 
 UBehaviorTree* AC4EAICharacter::GetBehaviourTree()

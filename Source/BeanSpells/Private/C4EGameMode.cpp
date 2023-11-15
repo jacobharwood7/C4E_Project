@@ -3,10 +3,12 @@
 
 #include "C4EGameMode.h"
 
+#include "C4EAICharacter.h"
 #include "C4EPlayerController.h"
 #include "GameRule.h"
 #include "Blueprint/UserWidget.h"
 #include "WidgetMainMenu.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -73,23 +75,7 @@ void AC4EGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TArray<UActorComponent*> outComponents;
-	GetComponents(outComponents);
-	for(UActorComponent* comp : outComponents)
-	{
-		if(UGameRule* rule = Cast<UGameRule>(comp))
-		{
-			_gameRuleManagers.Add(rule, rule->_isOptional);
-			rule->Init();
-			rule->OnGameRuleCompleted.AddUniqueDynamic(this,&AC4EGameMode::Handle_GameRuleCompleted);
-			rule->OnGameRulePointsScored.AddUniqueDynamic(this,&AC4EGameMode::Handle_GameRulePointsScored);
-
-			if(!rule->_isOptional)
-			{
-				_gameRulesLeft++;
-			}
-		}
-	}
+	
 	
 }
 
@@ -114,6 +100,23 @@ void AC4EGameMode::HandleMatchIsWaitingToStart()
 
 void AC4EGameMode::HandleMatchHasStarted()
 {
+	TArray<UActorComponent*> outComponents;
+	GetComponents(outComponents);
+	for(UActorComponent* comp : outComponents)
+	{
+		if(UGameRule* rule = Cast<UGameRule>(comp))
+		{
+			_gameRuleManagers.Add(rule, rule->_isOptional);
+			rule->Init();
+			rule->OnGameRuleCompleted.AddUniqueDynamic(this,&AC4EGameMode::Handle_GameRuleCompleted);
+			rule->OnGameRulePointsScored.AddUniqueDynamic(this,&AC4EGameMode::Handle_GameRulePointsScored);
+
+			if(!rule->_isOptional)
+			{
+				_gameRulesLeft++;
+			}
+		}
+	}
 	for(AController*controller:_playerControllers)
 	{
 		if(UKismetSystemLibrary::DoesImplementInterface(controller,UMatchStateHandler::StaticClass()))
@@ -121,6 +124,7 @@ void AC4EGameMode::HandleMatchHasStarted()
 			IMatchStateHandler::Execute_Handle_MatchStarted(controller);
 		}
 	}
+	
 	Super::HandleMatchHasStarted();
 }
 

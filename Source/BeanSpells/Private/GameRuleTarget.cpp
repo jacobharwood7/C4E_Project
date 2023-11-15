@@ -20,6 +20,7 @@ void UGameRuleTarget::Init()
 		}
 	}
 	_amountRemaining = _targets.Num();
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,FString::Printf(TEXT("Targets Found : %d"), _amountRemaining));
 	for(UTarget* t : _targets)
 	{
 		t->OnTargetDestroyed.AddUniqueDynamic(this,&UGameRuleTarget::Handle_TargetDestroyed);

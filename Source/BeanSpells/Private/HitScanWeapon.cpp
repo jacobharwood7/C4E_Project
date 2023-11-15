@@ -20,7 +20,7 @@ bool AHitScanWeapon::Fire_Implementation()
 	
 
 	if(UKismetSystemLibrary::LineTraceSingle(GetWorld(),Origin,End,UEngineTypes::ConvertToTraceType(ECC_Visibility)
-		,true,{this,GetOwner()},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,0.3f))
+		,true,{GetOwner()},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,0.3f))
 	{
 		if(Hit.GetActor()->CanBeDamaged())
 		{

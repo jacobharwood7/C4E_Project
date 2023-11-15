@@ -1,6 +1,7 @@
 ﻿#include"Target.h"
 
 #include "Health.h"
+#include "Kismet/GameplayStatics.h"
 
 UTarget::UTarget()
 {
@@ -27,6 +28,12 @@ void UTarget::BeginPlay()
 
 void UTarget::Handle_Dead(AController* causer)
 {
+	
 	OnTargetDestroyed.Broadcast(GetOwner(),causer);
+	TArray<AActor*> FoundActors = GetOwner()->Children;
+	for (AActor* ActorFound :FoundActors)
+	{
+		ActorFound->Destroy();
+	}
 	GetOwner()->Destroy();
 }

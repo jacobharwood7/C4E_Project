@@ -40,7 +40,6 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
 		UGameplayStatics::ApplyDamage(OtherActor,_damage,GetInstigatorController(),this,UDamageType::StaticClass());
-		UE_LOG(LogTemp,Display,TEXT("Owner is %s"),*Owner->GetName());
 
 		if(OtherComp->IsSimulatingPhysics())
 		{
