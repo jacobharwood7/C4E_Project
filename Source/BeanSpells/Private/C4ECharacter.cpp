@@ -39,12 +39,10 @@ void AC4ECharacter::Look_Implementation(const FInputActionValue& Input)
 {
 	if(Controller)
 	{
-
 		FVector2d LookAxisVector = Input.Get<FVector2d>();
 	
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
-		
 	}
 }
 

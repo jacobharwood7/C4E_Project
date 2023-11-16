@@ -16,6 +16,5 @@ class BEANSPELLS_API UBTTask_CastSpell : public UBTTask_BlackboardBase
 public:
 	UBTTask_CastSpell();
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-private:
 	
 };
