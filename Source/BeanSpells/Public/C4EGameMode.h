@@ -4,6 +4,7 @@
 #include "GameFramework/GameMode.h"
 #include "C4EGameMode.generated.h"
 
+class AC4EAIController;
 class AC4EAICharacter;
 class UWidgetMainMenu;
 class UGameRule;
@@ -42,7 +43,7 @@ protected:
 	TMap<TObjectPtr<UGameRule>, bool> _gameRuleManagers;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TObjectPtr<AC4EAICharacter> AI;
+	TSubclassOf<AController> AIController;
 	
 	FTimerHandle _timerDecreaseCountdown;
 	UFUNCTION()

@@ -73,8 +73,6 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 		//TODO: Bind to any relevant events
 		castedPawn->Init();
 	}
-
-	IMatchStateHandler::Handle_MatchStarted_Implementation();
 }
 
 void AC4EPlayerController::Handle_MatchEnded_Implementation()

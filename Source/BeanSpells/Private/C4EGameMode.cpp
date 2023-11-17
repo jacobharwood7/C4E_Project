@@ -4,6 +4,7 @@
 #include "C4EGameMode.h"
 
 #include "C4EAICharacter.h"
+#include "C4EAIController.h"
 #include "C4EPlayerController.h"
 #include "GameRule.h"
 #include "Blueprint/UserWidget.h"
@@ -37,7 +38,7 @@ void AC4EGameMode::PostLogin(APlayerController* NewPlayer)
 	if(AC4EPlayerController* castedPC = Cast<AC4EPlayerController>(NewPlayer))
 	{
 		//TODO bind to relevant event
-		castedPC ->Init();
+		castedPC->Init();
 	}
 	Super::PostLogin(NewPlayer);
 }
@@ -56,14 +57,10 @@ void AC4EGameMode::Handle_GameRuleCompleted(UGameRule* rule)
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Blue,FString::Printf(TEXT("Game Rule completed. %d Remaining"), _gameRulesLeft));
 	if(_gameRulesLeft!=0){return;}
 	EndMatch();
-	
-	
 }
 
 void AC4EGameMode::Handle_GameRulePointsScored(AController* scorer, int points)
 {
-	
-	UE_LOG(LogTemp,Display,TEXT("POINT to gryffindor"))
 	AC4EPlayerController* castedPC = Cast<AC4EPlayerController>(scorer);
 	if(castedPC)
 	{
@@ -73,10 +70,7 @@ void AC4EGameMode::Handle_GameRulePointsScored(AController* scorer, int points)
 
 void AC4EGameMode::BeginPlay()
 {
-	Super::BeginPlay();
-
-	
-	
+	Super::BeginPlay();	
 }
 
 void AC4EGameMode::HandleMatchIsWaitingToStart()
@@ -117,12 +111,27 @@ void AC4EGameMode::HandleMatchHasStarted()
 			}
 		}
 	}
-	for(AController*controller:_playerControllers)
+	for(AController* controller:_playerControllers)
 	{
+		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("1"));
 		if(UKismetSystemLibrary::DoesImplementInterface(controller,UMatchStateHandler::StaticClass()))
 		{
+			GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("PLAYER has interface"));
+			
 			IMatchStateHandler::Execute_Handle_MatchStarted(controller);
 		}
+	}
+
+	//AI NOT SPAWNING
+	if(UKismetSystemLibrary::DoesImplementInterface(AIController,UMatchStateHandler::StaticClass()))
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("AI has interface"));
+
+		IMatchStateHandler::Execute_Handle_MatchStarted(AIController);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("AI has no interface"));
 	}
 	
 	Super::HandleMatchHasStarted();

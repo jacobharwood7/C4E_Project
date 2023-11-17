@@ -1,7 +1,6 @@
 ﻿#include "C4EAICharacter.h"
 
 #include "Components/CapsuleComponent.h"
-#include "EnhancedInputComponent.h"
 #include "Fireable.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Target.h"
@@ -36,27 +35,6 @@ void AC4EAICharacter::Init_Implementation()
 		{
 			_FireableRef = spawnedGun;
 		}
-	}
-}
-
-
-void AC4EAICharacter::Move_Implementation(const FInputActionValue& value)
-{
-	FVector2d movementVector = value.Get<FVector2D>();
-	if (Controller!=nullptr)
-	{
-		AddMovementInput(GetActorForwardVector(),movementVector.Y);
-		AddMovementInput(GetActorRightVector(),movementVector.X);
-	}
-}
-
-void AC4EAICharacter::Look_Implementation(const FInputActionValue& value)
-{
-	FVector2d LookAxisVector = value.Get<FVector2d>();
-	if (Controller!=nullptr)
-	{
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
 

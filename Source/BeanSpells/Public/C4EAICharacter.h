@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "InputActionValue.h"
 #include "Interface_Input.h"
 #include "C4EAICharacter.generated.h"
 
@@ -46,7 +45,5 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<AActor> _FireableRef;
 	
-	virtual void Move_Implementation(const FInputActionValue& Input) override;
-	virtual void Look_Implementation(const FInputActionValue& Input) override;
 	virtual void Shoot_Implementation() override;
 };
