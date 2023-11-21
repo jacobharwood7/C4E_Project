@@ -1,10 +1,10 @@
 ﻿#include"Components/Target.h"
 
 #include "Components/Health.h"
-#include "Kismet/GameplayStatics.h"
 
 UTarget::UTarget()
 {
+	
 }
 
 void UTarget::BeginPlay()
@@ -23,12 +23,13 @@ void UTarget::BeginPlay()
 	}
 
 	owner->Tags.Add(FName("gameruletarget"));
+	
 	_healthComp->OnDead.AddUniqueDynamic(this,&UTarget::Handle_Dead);
 }
 
 void UTarget::Handle_Dead(AController* causer)
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Magenta,FString::Printf(TEXT("TARget DIED : ")));
 	OnTargetDestroyed.Broadcast(GetOwner(),causer);
 	TArray<AActor*> FoundActors = GetOwner()->Children;
 	for (AActor* ActorFound :FoundActors)

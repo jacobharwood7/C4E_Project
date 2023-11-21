@@ -20,6 +20,8 @@ public:
 	UGameRuleTarget();
 
 	virtual void Init() override;
+	
+	void Handle_TargetSpawned(UTarget* spawned);
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TArray<TObjectPtr<UTarget>> _targets;

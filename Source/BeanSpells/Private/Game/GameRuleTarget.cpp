@@ -38,3 +38,11 @@ void UGameRuleTarget::Handle_TargetDestroyed(AActor* target, AController* causer
 		BroadcastGameRuleCompleted();
 	}
 }
+
+void UGameRuleTarget::Handle_TargetSpawned(UTarget* spawned)
+{
+	_amountRemaining = _targets.Num();
+	_targets.Add(spawned);
+	spawned->OnTargetDestroyed.AddUniqueDynamic(this,&UGameRuleTarget::Handle_TargetDestroyed);
+}
+

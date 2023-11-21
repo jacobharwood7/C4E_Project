@@ -2,6 +2,8 @@
 
 
 #include "Game/C4EGameMode.h"
+
+#include "AIHelpers.h"
 #include "Game/GameRule.h"
 #include "Game/C4EGameState.h"
 
@@ -13,6 +15,9 @@
 #include "GameFramework/PlayerStart.h"
 #include "Interfaces/MatchStateHandler.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
+#include "Components/Target.h"
+#include "Game/GameRuleTarget.h"
 
 AC4EGameMode::AC4EGameMode() : Super()
 {
@@ -76,9 +81,9 @@ void AC4EGameMode::BeginPlay()
 
 
 void AC4EGameMode::HandleMatchIsWaitingToStart()
-{
-	GameState = GetGameState<AC4EGameState>();
-	GetWorld()->GetTimerManager().SetTimer(_TimerSpawnerHandle,this,&AC4EGameMode::SpawnAI,2.0f,true);
+{	
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(),FName("AISpawn"),_spawnPoints);
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Orange,FString::Printf(TEXT("Number of AI Spawn Points is : %d"),_spawnPoints.Num()));
 	
 	//create main menu widget
 	if(_menuWidgetClass)
@@ -125,6 +130,9 @@ void AC4EGameMode::HandleMatchHasStarted()
 			IMatchStateHandler::Execute_Handle_MatchStarted(controller);
 		}
 	}
+
+	/*--SPAWN AI--*/
+	GetWorld()->GetTimerManager().SetTimer(_TimerSpawnerHandle,this,&AC4EGameMode::SpawnAI,2.0f,true);
 	
 	Super::HandleMatchHasStarted();
 }
@@ -179,5 +187,19 @@ bool AC4EGameMode::ReadyToEndMatch_Implementation()
 
 void AC4EGameMode::SpawnAI()
 {
+	
+	int chosenSpawn = FMath::RandRange(0,_spawnPoints.Num()-1);
+	FVector spawnLocation = _spawnPoints[chosenSpawn]->GetActorLocation();
+	FRotator spawnRotation = _spawnPoints[chosenSpawn]->GetActorRotation();
+	FActorSpawnParameters spawnParams;
+	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	if(AC4EAICharacter* AI = GetWorld()->SpawnActor<AC4EAICharacter>(AIPawn,spawnLocation,spawnRotation,spawnParams))
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,TEXT("SPAWNING DEATH EATER"));
+		AI->Init();
+		UGameRuleTarget* TargetRule = FindComponentByClass<UGameRuleTarget>();
+		TargetRule->Handle_TargetSpawned(AI->FindComponentByClass<UTarget>());
+	}
 }
 

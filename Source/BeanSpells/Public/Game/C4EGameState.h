@@ -6,7 +6,7 @@
 #include "GameFramework/GameState.h"
 #include "C4EGameState.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class BEANSPELLS_API AC4EGameState : public AGameState
 {
 	GENERATED_BODY()

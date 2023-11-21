@@ -28,6 +28,11 @@ public:
 	virtual void Logout(AController* Exiting) override;
 protected:
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TSubclassOf<AC4EAICharacter> AIPawn;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TArray<AActor*> _spawnPoints;
 	
 	FTimerHandle _TimerSpawnerHandle;
 	
@@ -46,10 +51,6 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TMap<TObjectPtr<UGameRule>, bool> _gameRuleManagers;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TSubclassOf<AController> AIController;
-	
-	FTimerHandle _timerDecreaseCountdown;
 	UFUNCTION()
 	void Handle_GameRuleCompleted(UGameRule* rule);
 	

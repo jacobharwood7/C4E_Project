@@ -1,11 +1,6 @@
-﻿
-#include "Weapons/ProjectileWeapon.h"
+﻿#include "Weapons/ProjectileWeapon.h"
 #include "Weapons/WeaponType.h"
-
 #include "Components/ArrowComponent.h"
-
-DEFINE_LOG_CATEGORY_STATIC(LogProj, Display, All);
-
 
 bool AProjectileWeapon::Fire_Implementation()
 {

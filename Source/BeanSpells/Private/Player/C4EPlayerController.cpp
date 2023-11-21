@@ -32,11 +32,6 @@ void AC4EPlayerController::Init_Implementation()
 		GetPawn()->Destroy();
 	}
 
-	if(_scoreWidgetClass)
-	{
-		_scoreWidget = CreateWidget<UWidgetScore,AC4EPlayerController*>(this,_scoreWidgetClass);
-		_scoreWidget->AddToViewport();
-	}
 }
 
 void AC4EPlayerController::SetupInputComponent()
@@ -64,7 +59,7 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 	FVector spawnLocation = TempStart!=nullptr ? TempStart->GetActorLocation():FVector::ZeroVector;
 	FRotator spawnRotation = TempStart!=nullptr ? TempStart->GetActorRotation():FRotator::ZeroRotator;
 	FActorSpawnParameters spawnParams;
-	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 	_tempPawn = World->SpawnActor<APawn>(_pawnToSpawn,spawnLocation,spawnRotation,spawnParams);
 	Possess(_tempPawn);
@@ -72,6 +67,12 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 	{
 		//TODO: Bind to any relevant events
 		castedPawn->Init();
+	}
+
+	if(_scoreWidgetClass)
+	{
+		_scoreWidget = CreateWidget<UWidgetScore,AC4EPlayerController*>(this,_scoreWidgetClass);
+		_scoreWidget->AddToViewport();
 	}
 }
 
