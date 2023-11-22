@@ -7,8 +7,9 @@
 ACollectable::ACollectable()
 {
 	_pointsValue = 1;
-	_collision =CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
-	RootComponent = _collision;
+	_Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = _Root;
+	_mesh = CreateDefaultSubobject<UStaticMesh>(TEXT("Mesh"));
 }
 
 

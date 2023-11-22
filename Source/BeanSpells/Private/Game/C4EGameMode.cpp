@@ -193,11 +193,11 @@ void AC4EGameMode::SpawnAI()
 	FRotator spawnRotation = _spawnPoints[chosenSpawn]->GetActorRotation();
 	FActorSpawnParameters spawnParams;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
+	
 	if(AC4EAICharacter* AI = GetWorld()->SpawnActor<AC4EAICharacter>(AIPawn,spawnLocation,spawnRotation,spawnParams))
 	{
 		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,TEXT("SPAWNING DEATH EATER"));
-		AI->Init();
+		
 		UGameRuleTarget* TargetRule = FindComponentByClass<UGameRuleTarget>();
 		TargetRule->Handle_TargetSpawned(AI->FindComponentByClass<UTarget>());
 	}

@@ -27,7 +27,7 @@ void UGameRuleCollectables::Init()
 	
 	for(ACollectable* col :_allCollectables)
 	{
-		col->OnCollected.AddUniqueDynamic(this, &UGameRuleCollectables::Handle_Collected);
+		Handle_Spawn(col);
 	}
 	
 	Super::Init();
@@ -43,3 +43,9 @@ void UGameRuleCollectables::Handle_Collected(ACollectable* subject, AController*
 		BroadcastGameRuleCompleted();
 	}
 }
+
+void UGameRuleCollectables::Handle_Spawn(ACollectable* subject)
+{
+	subject->OnCollected.AddUniqueDynamic(this, &UGameRuleCollectables::Handle_Collected);
+}
+

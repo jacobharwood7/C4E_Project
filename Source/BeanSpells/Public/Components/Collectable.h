@@ -25,8 +25,11 @@ public:
 	int _pointsValue;
 	
 protected:
+	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
-	TObjectPtr<USphereComponent> _collision;
+	TObjectPtr<USceneComponent> _Root;
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	TObjectPtr<UStaticMesh> _mesh;
 
 	
 	UFUNCTION(BlueprintCallable)

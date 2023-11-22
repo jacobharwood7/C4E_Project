@@ -46,4 +46,5 @@ protected:
 	TObjectPtr<AActor> _FireableRef;
 	
 	virtual void Shoot_Implementation() override;
+	
 };

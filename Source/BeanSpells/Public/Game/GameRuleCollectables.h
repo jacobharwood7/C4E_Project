@@ -16,13 +16,15 @@ public:
 	UGameRuleCollectables();
 
 	virtual void Init() override;
+
+	UFUNCTION()
+	void Handle_Collected(ACollectable* subject, AController* causer);
+	UFUNCTION()
+	void Handle_Spawn(ACollectable* subject);
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TArray<TObjectPtr<ACollectable>> _allCollectables;
 
 	int _amountRemaining;
-
-	UFUNCTION()
-	void Handle_Collected(ACollectable* subject, AController* causer);
 	
 };

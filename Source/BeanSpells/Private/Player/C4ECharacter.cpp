@@ -3,6 +3,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
+#include "Components/BoxComponent.h"
 #include "Interfaces/Fireable.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Weapons/Weapon_Base.h"
@@ -19,6 +20,10 @@ AC4ECharacter::AC4ECharacter()
 
 	_weaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponAttachPoint"));
 	_weaponAttachPoint->SetupAttachment(_camera);
+
+	
+	_footCoinCollection = CreateDefaultSubobject<UBoxComponent>(TEXT("Feet"));
+	_footCoinCollection->SetupAttachment(GetCapsuleComponent());
 
 	SetupStimulusSource();
 }

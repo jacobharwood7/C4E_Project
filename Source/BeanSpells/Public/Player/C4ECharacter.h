@@ -9,6 +9,7 @@
 #include "C4ECharacter.generated.h"
 
 
+class UBoxComponent;
 class UAIPerceptionStimuliSourceComponent;
 class UWeaponType;
 class UCameraComponent;
@@ -25,6 +26,9 @@ class BEANSPELLS_API AC4ECharacter : public ACharacter, public IInterface_Input
 	TObjectPtr<UCameraComponent> _camera;
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
 	TObjectPtr<USceneComponent> _weaponAttachPoint;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<UBoxComponent> _footCoinCollection;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
 	UInputMappingContext* PlayerMappingContext;
