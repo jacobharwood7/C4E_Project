@@ -22,4 +22,11 @@ public:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> _left;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> _right;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> _up;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> _down;
+	
 };

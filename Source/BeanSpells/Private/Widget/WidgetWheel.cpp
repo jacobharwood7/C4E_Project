@@ -20,7 +20,6 @@ void UWidgetWheel::Resume()
 {
 	
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1.0f);
-	UE_LOG(LogTemp,Display,TEXT("WheelAttemptresume"))
 	APlayerController* PC = GetOwningPlayer();
 	
 	PC->SetShowMouseCursor(false);

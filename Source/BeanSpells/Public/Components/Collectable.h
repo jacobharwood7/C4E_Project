@@ -29,7 +29,7 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<USceneComponent> _Root;
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
-	TObjectPtr<UStaticMesh> _mesh;
+	TObjectPtr<UStaticMeshComponent> _mesh;
 
 	
 	UFUNCTION(BlueprintCallable)

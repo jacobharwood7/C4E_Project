@@ -166,11 +166,14 @@ void AC4EPlayerController::Handle_SwitchWeapon()
 void AC4EPlayerController::Handle_FinishSwitchWeapon()
 {
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Finished ATTEMPT"));
-	if(_wheelWidgetClass)
-	{
-		_wheelWidget->RemoveFromParent();
-		SetShowMouseCursor(false);
-		SetInputMode(FInputModeGameOnly());
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1.0f);
-	}
+
+	
+		if(_wheelWidgetClass)
+		{
+			_wheelWidget->RemoveFromParent();
+			SetShowMouseCursor(false);
+			SetInputMode(FInputModeGameOnly());
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1.0f);
+		}
+	
 }
