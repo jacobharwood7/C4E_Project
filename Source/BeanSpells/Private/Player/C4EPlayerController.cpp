@@ -51,6 +51,7 @@ void AC4EPlayerController::SetupInputComponent()
 			
 			UEIP->BindAction(_inputActions->PauseAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_Paused);
 			UEIP->BindAction(_inputActions->SwitchActionOn.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_SwitchWeapon);
+			//not firing in ui mode
 			UEIP->BindAction(_inputActions->SwitchActionOff.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_FinishSwitchWeapon);
 
 		}
@@ -156,7 +157,7 @@ void AC4EPlayerController::Handle_SwitchWeapon()
 		_wheelWidget = CreateWidget<UWidgetWheel,AC4EPlayerController*>(this,_wheelWidgetClass);
 		_wheelWidget->AddToViewport();
 		SetShowMouseCursor(true);
-		SetInputMode(FInputModeUIOnly());
+		SetInputMode(FInputModeGameAndUI());
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
 		
 	}

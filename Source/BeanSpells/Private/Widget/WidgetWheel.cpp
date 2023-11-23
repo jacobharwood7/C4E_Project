@@ -18,7 +18,7 @@ void UWidgetWheel::NativeConstruct()
 }
 void UWidgetWheel::Resume()
 {
-	/*
+	
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1.0f);
 	UE_LOG(LogTemp,Display,TEXT("WheelAttemptresume"))
 	APlayerController* PC = GetOwningPlayer();
@@ -26,5 +26,5 @@ void UWidgetWheel::Resume()
 	PC->SetShowMouseCursor(false);
 	PC->SetInputMode(FInputModeGameOnly());
 
-	RemoveFromParent();*/
+	RemoveFromParent();
 }
