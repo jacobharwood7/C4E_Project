@@ -14,7 +14,7 @@ void UGameRule::BroadcastGameRuleCompleted()
 	OnGameRuleCompleted.Broadcast(this);
 }
 
-void UGameRule::BroadcastGameRulePointsScored(AController* scorer, int points)
+void UGameRule::BroadcastGameRulePointsScored(AController* scorer, int points,int type)
 {
-	OnGameRulePointsScored.Broadcast(scorer,points);
+	OnGameRulePointsScored.Broadcast(scorer,points,type);
 }

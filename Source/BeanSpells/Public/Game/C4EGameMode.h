@@ -55,7 +55,7 @@ protected:
 	void Handle_GameRuleCompleted(UGameRule* rule);
 	
 	UFUNCTION()
-	void Handle_GameRulePointsScored(AController* scorer, int points);
+	void Handle_GameRulePointsScored(AController* scorer, int points, int type);
 
 	virtual void BeginPlay() override;
 

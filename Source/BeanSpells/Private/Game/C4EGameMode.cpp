@@ -65,12 +65,21 @@ void AC4EGameMode::Handle_GameRuleCompleted(UGameRule* rule)
 	EndMatch();
 }
 
-void AC4EGameMode::Handle_GameRulePointsScored(AController* scorer, int points)
+void AC4EGameMode::Handle_GameRulePointsScored(AController* scorer, int points,int type)
 {
+	
 	AC4EPlayerController* castedPC = Cast<AC4EPlayerController>(scorer);
 	if(castedPC)
 	{
-		castedPC->AddScore(points);
+		switch(type)
+		{
+		case 0:
+			castedPC->AddScore(points);
+			break;
+		case 1:
+			castedPC->AddCoin(points);
+		default: ;
+		}
 	}
 }
 
@@ -187,7 +196,6 @@ bool AC4EGameMode::ReadyToEndMatch_Implementation()
 
 void AC4EGameMode::SpawnAI()
 {
-	
 	int chosenSpawn = FMath::RandRange(0,_spawnPoints.Num()-1);
 	FVector spawnLocation = _spawnPoints[chosenSpawn]->GetActorLocation();
 	FRotator spawnRotation = _spawnPoints[chosenSpawn]->GetActorRotation();

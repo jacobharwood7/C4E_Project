@@ -6,6 +6,8 @@
 #include "Player/InputAsset.h"
 #include "Widget/WidgetScore.h"
 #include "Widget/WidgetPause.h"
+#include "Widget/WidgetCoins.h"
+#include "Widget/WidgetWheel.h"
 #include "GameFramework/GameModeBase.h"
 #include "Interfaces/Interface_Input.h"
 #include "Kismet/GameplayStatics.h"
@@ -48,6 +50,9 @@ void AC4EPlayerController::SetupInputComponent()
 			UEIP->BindAction(_inputActions->ShootAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Shoot);
 			
 			UEIP->BindAction(_inputActions->PauseAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_Paused);
+			UEIP->BindAction(_inputActions->SwitchActionOn.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_SwitchWeapon);
+			UEIP->BindAction(_inputActions->SwitchActionOff.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_FinishSwitchWeapon);
+
 		}
 	}
 }
@@ -74,6 +79,11 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 		_scoreWidget = CreateWidget<UWidgetScore,AC4EPlayerController*>(this,_scoreWidgetClass);
 		_scoreWidget->AddToViewport();
 	}
+	if(_coinWidgetClass)
+	{
+		_coinWidget = CreateWidget<UWidgetCoins,AC4EPlayerController*>(this,_coinWidgetClass);
+		_coinWidget->AddToViewport();
+	}
 }
 
 void AC4EPlayerController::Handle_MatchEnded_Implementation()
@@ -88,6 +98,15 @@ void AC4EPlayerController::AddScore(int amount)
 	if(_scoreWidget != nullptr)
 	{
 		_scoreWidget->UpdateScore(_score);
+	}
+}
+
+void AC4EPlayerController::AddCoin(int amount)
+{
+	_coins +=amount;
+	if(_coinWidget!= nullptr)
+	{
+		_coinWidget->UpdateCoins(_coins);
 	}
 }
 
@@ -118,6 +137,7 @@ void AC4EPlayerController::StopJump()
 
 void AC4EPlayerController::Handle_Paused()
 {
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Pause  ATTEMPT"));
 	if(_pauseWidgetClass)
 	{
 		_pauseWidget = CreateWidget<UWidgetPause,AC4EPlayerController*>(this,_pauseWidgetClass);
@@ -126,5 +146,30 @@ void AC4EPlayerController::Handle_Paused()
 		SetInputMode(FInputModeUIOnly());
 		UGameplayStatics::SetGamePaused(GetWorld(),true);
 	}
-	
+}
+
+void AC4EPlayerController::Handle_SwitchWeapon()
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("SWITCH  ATTEMPT"));
+	if(_wheelWidgetClass)
+	{
+		_wheelWidget = CreateWidget<UWidgetWheel,AC4EPlayerController*>(this,_wheelWidgetClass);
+		_wheelWidget->AddToViewport();
+		SetShowMouseCursor(true);
+		SetInputMode(FInputModeUIOnly());
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
+		
+	}
+}
+
+void AC4EPlayerController::Handle_FinishSwitchWeapon()
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Finished ATTEMPT"));
+	if(_wheelWidgetClass)
+	{
+		_wheelWidget->RemoveFromParent();
+		SetShowMouseCursor(false);
+		SetInputMode(FInputModeGameOnly());
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1.0f);
+	}
 }

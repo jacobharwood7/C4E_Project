@@ -32,7 +32,7 @@ void UGameRuleTarget::Init()
 void UGameRuleTarget::Handle_TargetDestroyed(AActor* target, AController* causer)
 {
 	_amountRemaining--;
-	BroadcastGameRulePointsScored(causer,1);
+	BroadcastGameRulePointsScored(causer,1,0);
 	if(_amountRemaining==0)
 	{
 		BroadcastGameRuleCompleted();

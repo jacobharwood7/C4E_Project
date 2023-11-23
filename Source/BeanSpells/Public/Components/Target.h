@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Target.generated.h"
 
+class UGameRuleCollectables;
 class ACollectable;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTargetDestroyedSignature, AActor*, target, AController*,
                                              delegateInstigator);
@@ -33,6 +34,8 @@ protected:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<ACollectable> _coin;
+
+	UGameRuleCollectables* grc;
 private:
 	UFUNCTION()
 	void Handle_Dead(AController* causer);

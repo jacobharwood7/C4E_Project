@@ -1,8 +1,5 @@
 ﻿#include "Components/Collectable.h"
 
-#include "Player/C4ECharacter.h"
-#include "Player/C4EPlayerController.h"
-#include "Components/SphereComponent.h"
 
 ACollectable::ACollectable()
 {

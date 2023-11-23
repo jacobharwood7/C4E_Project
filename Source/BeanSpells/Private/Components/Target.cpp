@@ -1,6 +1,7 @@
 ﻿#include"Components/Target.h"
 #include "Components/Collectable.h"
 #include "Components/Health.h"
+#include "Game/C4EGameMode.h"
 #include "Game/GameRuleCollectables.h"
 
 UTarget::UTarget()
@@ -12,6 +13,8 @@ void UTarget::BeginPlay()
 {
 	Super::BeginPlay();
 
+	grc = GetWorld()->GetAuthGameMode()->FindComponentByClass<UGameRuleCollectables>();
+	
 	AActor* owner = GetOwner();
 	_healthComp = owner->FindComponentByClass<UHealth>();
 
@@ -45,7 +48,7 @@ void UTarget::Handle_Dead(AController* causer)
 
 void UTarget::SpawnCoins()
 {
-	int CoinCount = FMath::RandRange(5,15);
+	int CoinCount = FMath::RandRange(5,20);
 	FVector spawnLocation = GetOwner()->GetActorLocation();
 	FRotator spawnRotation = GetOwner()->GetActorRotation();
 	FActorSpawnParameters spawnParams;
@@ -54,10 +57,7 @@ void UTarget::SpawnCoins()
 	{
 		if(ACollectable* Coin = GetWorld()->SpawnActor<ACollectable>(_coin,spawnLocation,spawnRotation,spawnParams))
 		{
-			GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,FString::Printf(TEXT("COINNNNNNNNNNN")));
-			//ASSIGN FUNCTION TO EVENT SOMEHOW
-			
-			//UGameRuleCollectables::Handle_Spawn(Coin);
+			grc->Handle_Spawn(Coin);
 		}
 	}
 }

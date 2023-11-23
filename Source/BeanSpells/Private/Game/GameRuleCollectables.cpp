@@ -36,7 +36,7 @@ void UGameRuleCollectables::Init()
 void UGameRuleCollectables::Handle_Collected(ACollectable* subject, AController* causer)
 {
 	_amountRemaining--;
-	BroadcastGameRulePointsScored(causer,subject->_pointsValue);
+	BroadcastGameRulePointsScored(causer,subject->_pointsValue, 1);
 
 	if(_amountRemaining==0)
 	{

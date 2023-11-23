@@ -6,6 +6,8 @@
 #include "Interfaces/MatchStateHandler.h"
 #include "C4EPlayerController.generated.h"
 
+class UWidgetWheel;
+class UWidgetCoins;
 class AC4ECharacter;
 class UWidgetPause;
 class UWidgetScore;
@@ -47,8 +49,12 @@ public:
 	UFUNCTION()
 	void Handle_Paused();
 
+	UFUNCTION()
+	void Handle_SwitchWeapon();
+	void Handle_FinishSwitchWeapon();
+
 	void AddScore(int amount);
-	
+	void AddCoin(int amount);
 protected:
 
 	UPROPERTY(EditAnywhere)
@@ -56,8 +62,18 @@ protected:
 	TObjectPtr<UWidgetScore> _scoreWidget;
 	
 	UPROPERTY(EditAnywhere)
+	TSubclassOf<UWidgetCoins> _coinWidgetClass;
+	TObjectPtr<UWidgetCoins> _coinWidget;
+	
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<UWidgetPause> _pauseWidgetClass;
 	TObjectPtr<UWidgetPause> _pauseWidget;
 	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UWidgetWheel> _wheelWidgetClass;
+	TObjectPtr<UWidgetWheel> _wheelWidget;
+	
 	int _score;
+
+	int _coins;
 };

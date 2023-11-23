@@ -4,7 +4,7 @@
 #include "GameRule.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGameRuleCompletedSignature, class UGameRule*, rule);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGameRulePointsScoredSignature,AController*,scorer, int, points);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FGameRulePointsScoredSignature,AController*,scorer, int, points, int, type);
 
 /**
  * 
@@ -26,7 +26,7 @@ public:
 	virtual void Init();
 protected:
 	void BroadcastGameRuleCompleted();
-	void BroadcastGameRulePointsScored(AController* scorer, int points);
+	void BroadcastGameRulePointsScored(AController* scorer, int points,int type);
 	
 	
 };
