@@ -20,7 +20,16 @@ class BEANSPELLS_API UWidgetWheel : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 	UFUNCTION()
-	void WeaponSwitch();
+	void WeaponSwitch(FString button);
+	UFUNCTION()
+	void LeftPressed();
+	UFUNCTION()
+	void RightPressed();
+	UFUNCTION()
+	void UpPressed();
+	UFUNCTION()
+	void DownPressed();
+	
 
 	TObjectPtr<AC4EPlayerController> PC;
 	

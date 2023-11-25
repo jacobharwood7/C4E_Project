@@ -45,9 +45,11 @@ public:
 	virtual void Shoot_Implementation() override;
 	virtual void Jump_Implementation() override;
 	virtual void StopJump_Implementation() override;
-	
+
+	void ChangeWeapon(TSubclassOf<AWeapon_Base> newWeapon);
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<AWeapon_Base> _CurrentWeapon;
+	TSubclassOf<AWeapon_Base> _defaultWeapon;
 
 protected:
 	

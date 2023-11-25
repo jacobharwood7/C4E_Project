@@ -80,19 +80,12 @@ void AC4ECharacter::StopJump_Implementation()
 	}
 }
 
+
 void AC4ECharacter::Init_Implementation()
 {
-	if(_CurrentWeapon)
+	if(_defaultWeapon)
 	{
-		FActorSpawnParameters spawnParams;
-		spawnParams.Owner = this;
-		spawnParams.Instigator = this;
-		TObjectPtr<AWeapon_Base> spawnedGun = GetWorld()->SpawnActor<AWeapon_Base>(_CurrentWeapon.Get(), _weaponAttachPoint->GetComponentTransform(),spawnParams);
-		spawnedGun->AttachToComponent(_weaponAttachPoint,FAttachmentTransformRules::SnapToTargetIncludingScale);
-		if(UKismetSystemLibrary::DoesImplementInterface(spawnedGun, UFireable::StaticClass()))
-		{
-			_FireableRef = spawnedGun;
-		}
+		ChangeWeapon(_defaultWeapon);
 	}
 }
 
@@ -105,4 +98,26 @@ void AC4ECharacter::SetupStimulusSource()
 		stimSource->RegisterForSense(TSubclassOf<UAISense_Sight>());//register this stimulus for the sight system
 		stimSource->RegisterWithPerceptionSystem();//register this stimulus with the perception system
 	}
+}
+
+void AC4ECharacter::ChangeWeapon(TSubclassOf<AWeapon_Base> newWeapon)
+{
+	TArray<AActor*> FoundActors = this->Children;
+	for (AActor* ActorFound :FoundActors)
+	{
+		ActorFound->Destroy();
+		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("DEAD CHILDREN HAHA"));
+	}
+	
+	FActorSpawnParameters spawnParams;
+	spawnParams.Owner = this;
+	spawnParams.Instigator = this;
+	TObjectPtr<AWeapon_Base> spawnedGun = GetWorld()->SpawnActor<AWeapon_Base>(newWeapon.Get(), _weaponAttachPoint->GetComponentTransform(),spawnParams);
+	spawnedGun->AttachToComponent(_weaponAttachPoint,FAttachmentTransformRules::SnapToTargetIncludingScale);
+	if(UKismetSystemLibrary::DoesImplementInterface(spawnedGun, UFireable::StaticClass()))
+	{
+		_FireableRef = spawnedGun;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Emerald,TEXT("Weapon Equip Attempt"));
 }

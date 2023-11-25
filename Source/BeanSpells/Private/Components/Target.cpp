@@ -36,13 +36,11 @@ void UTarget::Handle_Dead(AController* causer)
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Magenta,FString::Printf(TEXT("TARget DIED : ")));
 	OnTargetDestroyed.Broadcast(GetOwner(),causer);
 	TArray<AActor*> FoundActors = GetOwner()->Children;
-
-	SpawnCoins();
-	
 	for (AActor* ActorFound :FoundActors)
 	{
 		ActorFound->Destroy();
 	}
+	SpawnCoins();
 	GetOwner()->Destroy();
 }
 
