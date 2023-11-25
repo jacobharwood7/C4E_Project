@@ -4,6 +4,7 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/Inventory.h"
 #include "Interfaces/Fireable.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Weapons/Weapon_Base.h"
@@ -24,7 +25,8 @@ AC4ECharacter::AC4ECharacter()
 	
 	_footCoinCollection = CreateDefaultSubobject<UBoxComponent>(TEXT("Feet"));
 	_footCoinCollection->SetupAttachment(GetCapsuleComponent());
-
+	
+	
 	SetupStimulusSource();
 }
 

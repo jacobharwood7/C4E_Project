@@ -9,6 +9,7 @@
 #include "C4ECharacter.generated.h"
 
 
+class UInventory;
 class UBoxComponent;
 class UAIPerceptionStimuliSourceComponent;
 class UWeaponType;
@@ -32,6 +33,7 @@ class BEANSPELLS_API AC4ECharacter : public ACharacter, public IInterface_Input
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
 	UInputMappingContext* PlayerMappingContext;
+	
 
 
 public:
@@ -44,10 +46,10 @@ public:
 	virtual void Jump_Implementation() override;
 	virtual void StopJump_Implementation() override;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AWeapon_Base> _CurrentWeapon;
 
 protected:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TSubclassOf<AWeapon_Base> _CurrentWeapon;
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<AActor> _FireableRef;

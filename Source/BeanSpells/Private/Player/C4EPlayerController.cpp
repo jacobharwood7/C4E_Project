@@ -3,6 +3,7 @@
 #include "Player/C4ECharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/Inventory.h"
 #include "Player/InputAsset.h"
 #include "Widget/WidgetScore.h"
 #include "Widget/WidgetPause.h"
@@ -15,6 +16,8 @@
 
 AC4EPlayerController::AC4EPlayerController() : Super()
 {
+	
+	_playerInv = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
 	_score=0;
 }
 
@@ -85,6 +88,7 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 		_coinWidget = CreateWidget<UWidgetCoins,AC4EPlayerController*>(this,_coinWidgetClass);
 		_coinWidget->AddToViewport();
 	}
+
 }
 
 void AC4EPlayerController::Handle_MatchEnded_Implementation()
@@ -151,6 +155,8 @@ void AC4EPlayerController::Handle_Paused()
 
 void AC4EPlayerController::Handle_SwitchWeapon()
 {
+	
+	
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("SWITCH  ATTEMPT"));
 	if(_wheelWidgetClass)
 	{
@@ -165,9 +171,9 @@ void AC4EPlayerController::Handle_SwitchWeapon()
 
 void AC4EPlayerController::Handle_FinishSwitchWeapon()
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Finished ATTEMPT"));
-
-	
+	if (_wheelWidget)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Finished ATTEMPT"));
 		if(_wheelWidgetClass)
 		{
 			_wheelWidget->RemoveFromParent();
@@ -175,5 +181,7 @@ void AC4EPlayerController::Handle_FinishSwitchWeapon()
 			SetInputMode(FInputModeGameOnly());
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1.0f);
 		}
+		
+	}
 	
 }

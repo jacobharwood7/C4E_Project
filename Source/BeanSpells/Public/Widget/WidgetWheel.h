@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "WidgetWheel.generated.h"
 
+class AC4EPlayerController;
+class UImage;
 class UButton;
 /**
  * 
@@ -18,7 +20,9 @@ class BEANSPELLS_API UWidgetWheel : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 	UFUNCTION()
-	void Resume();
+	void WeaponSwitch();
+
+	TObjectPtr<AC4EPlayerController> PC;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> _left;
@@ -28,5 +32,15 @@ public:
 	TObjectPtr<UButton> _up;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> _down;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> _leftImg;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> _rightImg;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> _upImg;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> _downImg;
+
 	
 };
