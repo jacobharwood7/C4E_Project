@@ -27,5 +27,7 @@ public:
 	TSoftObjectPtr<UInputAction> SwitchActionOn;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
 	TSoftObjectPtr<UInputAction> SwitchActionOff;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
+	TSoftObjectPtr<UInputAction> ViewAction;
 
 };

@@ -4,7 +4,7 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "Components/BoxComponent.h"
-#include "Components/Inventory.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/Fireable.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Weapons/Weapon_Base.h"
@@ -14,13 +14,23 @@
 AC4ECharacter::AC4ECharacter()
 {
 	GetCapsuleComponent()->InitCapsuleSize(55.0f,96.0f);
-	_camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	_camera->SetupAttachment(GetCapsuleComponent());
-	_camera->SetRelativeLocation(FVector(-10.0f,0.0f,60.0f));
-	_camera->bUsePawnControlRotation = true;
+	_cameraBoomArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Boom Arm"));
+	_cameraBoomArm->SetupAttachment(RootComponent);
+	_cameraBoomArm->TargetArmLength = 350.0f;
+	_cameraBoomArm->bUsePawnControlRotation = true;
+	
+	_TPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
+	_TPCamera->SetupAttachment(_cameraBoomArm);
+	_TPCamera->bAutoActivate = true;
+	
+	_FPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	_FPCamera->SetupAttachment(GetMesh());
+	_FPCamera->SetRelativeLocation(FVector(10.0f,0.0f,70.0f));
+	_FPCamera->bUsePawnControlRotation = true;
+	_FPCamera->bAutoActivate = false;
 
 	_weaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponAttachPoint"));
-	_weaponAttachPoint->SetupAttachment(_camera);
+	_weaponAttachPoint->SetupAttachment(GetMesh());
 
 	
 	_footCoinCollection = CreateDefaultSubobject<UBoxComponent>(TEXT("Feet"));
@@ -38,7 +48,6 @@ void AC4ECharacter::Move_Implementation(const FInputActionValue& Input)
 		
 		AddMovementInput(GetActorForwardVector(),movementVector.Y);
 		AddMovementInput(GetActorRightVector(),movementVector.X);
-		
 	}
 }
 
@@ -80,9 +89,29 @@ void AC4ECharacter::StopJump_Implementation()
 	}
 }
 
+void AC4ECharacter::ChangeView()
+{	
+	if(_TPCamera->IsActive())
+	{
+		_FPCamera->SetActive(true);
+		_TPCamera->SetActive(false);
+		bUseControllerRotationYaw =true;
+	}
+	else
+	{
+		_TPCamera->SetActive(true);
+		_FPCamera->SetActive(false);
+		
+		bUseControllerRotationYaw =false;
+	}
+	
+}
+
 
 void AC4ECharacter::Init_Implementation()
-{
+{	
+	bUseControllerRotationYaw = false;
+	
 	if(_defaultWeapon)
 	{
 		ChangeWeapon(_defaultWeapon);

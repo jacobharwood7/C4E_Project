@@ -57,6 +57,8 @@ void AC4EPlayerController::SetupInputComponent()
 			//not firing in ui mode
 			UEIP->BindAction(_inputActions->SwitchActionOff.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_FinishSwitchWeapon);
 
+			UEIP->BindAction(_inputActions->ViewAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::ChangeView);
+
 		}
 	}
 }
@@ -180,8 +182,12 @@ void AC4EPlayerController::Handle_FinishSwitchWeapon()
 			SetShowMouseCursor(false);
 			SetInputMode(FInputModeGameOnly());
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1.0f);
-		}
-		
-	}
-	
+		}		
+	}	
+}
+
+void AC4EPlayerController::ChangeView()
+{
+	AC4ECharacter* castedPawn = Cast<AC4ECharacter>(_tempPawn);
+	castedPawn->ChangeView();
 }

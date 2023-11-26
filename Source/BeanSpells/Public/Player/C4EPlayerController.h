@@ -44,6 +44,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void Init();
 
+	void ChangeView();
 	UFUNCTION()
 	virtual void SetupInputComponent() override;
 
