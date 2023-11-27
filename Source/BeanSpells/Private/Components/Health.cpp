@@ -1,9 +1,5 @@
 ﻿
 #include "Components/Health.h"
-#include "Widget/WidgetDamage.h"
-
-#include "Blueprint/UserWidget.h"
-#include "Components/WidgetComponent.h"
 
 UHealth::UHealth()
 {

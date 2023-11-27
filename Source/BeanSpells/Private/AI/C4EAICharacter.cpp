@@ -17,6 +17,7 @@ AC4EAICharacter::AC4EAICharacter()
 	_weaponAttachPoint->SetupAttachment(GetCapsuleComponent());
 	_target = CreateDefaultSubobject<UTarget>(TEXT("Target"));
 	_damageComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("DamagePoints"));
+	_damageComp->SetupAttachment(RootComponent);
 	this->OnTakeAnyDamage.AddUniqueDynamic(this,&AC4EAICharacter::DamagePoints);
 	_damageComp->SetWidgetClass(_damageWidgetClass);
 }

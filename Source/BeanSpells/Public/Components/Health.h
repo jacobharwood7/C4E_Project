@@ -11,7 +11,7 @@ class UWidgetDamage;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComponentDeadSignature, AController*, causer);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class BEANSPELLS_API UHealth : public USceneComponent
+class BEANSPELLS_API UHealth : public UActorComponent
 {
 	GENERATED_BODY()
 	
