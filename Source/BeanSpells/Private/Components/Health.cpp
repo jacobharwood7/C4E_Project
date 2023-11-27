@@ -1,5 +1,9 @@
 ﻿
 #include "Components/Health.h"
+#include "Widget/WidgetDamage.h"
+
+#include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
 
 UHealth::UHealth()
 {
@@ -21,11 +25,13 @@ void UHealth::BeginPlay()
 
 	_currentHealth = _maxHealth;
 	_currentShield = 0.0f;
+	
 }
 
 void UHealth::DamageTaken(AActor* damagedActor, float damage, const UDamageType* damageType,
-	AController* instigator, AActor* causer)
+                          AController* instigator, AActor* causer)
 {
+	
 	float leftOverDamage = FMath::Max(damage - _currentShield,0.0f);
 	_currentShield = FMath::Max(_currentShield-damage,0.0f);
 	_shieldRecoverDelayTimer = _shieldRecoverDelay;

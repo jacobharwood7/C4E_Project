@@ -6,6 +6,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/Fireable.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Weapons/Weapon_Base.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
@@ -21,7 +22,9 @@ AC4ECharacter::AC4ECharacter()
 	
 	_TPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
 	_TPCamera->SetupAttachment(_cameraBoomArm);
+	_TPCamera->bUsePawnControlRotation = true;
 	_TPCamera->bAutoActivate = true;
+	_CurrentCamera = _TPCamera;
 	
 	_FPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	_FPCamera->SetupAttachment(GetMesh());
@@ -46,8 +49,9 @@ void AC4ECharacter::Move_Implementation(const FInputActionValue& Input)
 	{
 		FVector2d movementVector = Input.Get<FVector2D>();
 		
-		AddMovementInput(GetActorForwardVector(),movementVector.Y);
-		AddMovementInput(GetActorRightVector(),movementVector.X);
+		
+		AddMovementInput(UKismetMathLibrary::GetForwardVector(FRotator(0.0,GetControlRotation().Yaw,0.0)),movementVector.Y);
+		AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(0.0,GetControlRotation().Yaw,GetControlRotation().Roll)),movementVector.X);
 	}
 }
 
@@ -56,9 +60,11 @@ void AC4ECharacter::Look_Implementation(const FInputActionValue& Input)
 	if(Controller)
 	{
 		FVector2d LookAxisVector = Input.Get<FVector2d>();
-	
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+
+		AddControllerYawInput(LookAxisVector.X*0.5);
+		AddControllerPitchInput(LookAxisVector.Y*0.5);
+
+		_weaponAttachPoint->SetRelativeRotation(_CurrentCamera->GetRelativeRotation());
 	}
 }
 
@@ -95,14 +101,14 @@ void AC4ECharacter::ChangeView()
 	{
 		_FPCamera->SetActive(true);
 		_TPCamera->SetActive(false);
+		_CurrentCamera = _FPCamera;
 		bUseControllerRotationYaw =true;
 	}
 	else
 	{
 		_TPCamera->SetActive(true);
 		_FPCamera->SetActive(false);
-		
-		bUseControllerRotationYaw =false;
+		_CurrentCamera = _TPCamera;
 	}
 	
 }

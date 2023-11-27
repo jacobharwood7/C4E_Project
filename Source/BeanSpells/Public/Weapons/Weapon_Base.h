@@ -43,4 +43,6 @@ protected:
 	TObjectPtr<UArrowComponent> _Muzzle;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<UWeaponType> _typeData;
+	
+
 };

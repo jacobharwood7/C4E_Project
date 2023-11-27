@@ -6,10 +6,12 @@
 #include "Components/ActorComponent.h"
 #include "Health.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComponentDeadSignature, AController*,causer);
+class UWidgetComponent;
+class UWidgetDamage;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComponentDeadSignature, AController*, causer);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class BEANSPELLS_API UHealth : public UActorComponent
+class BEANSPELLS_API UHealth : public USceneComponent
 {
 	GENERATED_BODY()
 	
@@ -43,6 +45,7 @@ protected:
 	
 	virtual void BeginPlay() override;
 
+	
 	UFUNCTION()
 	void DamageTaken(AActor* damagedActor, float damage, const UDamageType* damageType, AController* instigator, AActor* causer);
 

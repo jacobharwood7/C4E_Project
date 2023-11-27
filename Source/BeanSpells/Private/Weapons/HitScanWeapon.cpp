@@ -20,12 +20,11 @@ bool AHitScanWeapon::Fire_Implementation()
 	
 
 	if(UKismetSystemLibrary::LineTraceSingle(GetWorld(),Origin,End,UEngineTypes::ConvertToTraceType(ECC_Visibility)
-		,true,{GetOwner()},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,0.3f))
+		,true,{},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,0.3f))
 	{
-		if(Hit.GetActor()->CanBeDamaged())
-		{
-			UGameplayStatics::ApplyDamage(Hit.GetActor(),_typeData->_damage,GetInstigatorController(),this,UDamageType::StaticClass());
-		}
+		
+		UGameplayStatics::ApplyDamage(Hit.GetActor(),_typeData->_damage,GetInstigatorController(),this,UDamageType::StaticClass());
+		
 		return true;
 	}
 	return false;

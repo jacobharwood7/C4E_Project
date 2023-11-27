@@ -50,6 +50,8 @@ protected:
 	TObjectPtr<UCameraComponent> _TPCamera;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta =(AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> _FPCamera;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<UCameraComponent> _CurrentCamera;
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> _cameraBoomArm;

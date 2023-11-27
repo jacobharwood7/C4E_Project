@@ -16,5 +16,6 @@ class BEANSPELLS_API AProjectileWeapon : public AWeapon_Base
 
 public:
 	virtual bool Fire_Implementation() override;
+	
 
 };
