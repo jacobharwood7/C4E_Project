@@ -16,6 +16,7 @@ void UWidgetDamage::Damage(int points)
 	{
 		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Turquoise,TEXT("DAMAGE FIRED"));
 		_damageText->SetText(FText::FromString(FString::FromInt(points)));
-		PlayAnimationForward(_fadeAnim);
+		PlayAnimation(_fadeAnim);
+		
 	}
 }
