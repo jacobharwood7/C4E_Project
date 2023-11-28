@@ -1,5 +1,6 @@
 ﻿#include "AI/C4EAICharacter.h"
 
+#include "AI/C4EAIController.h"
 #include "Components/CapsuleComponent.h"
 #include "Interfaces/Fireable.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -20,6 +21,9 @@ AC4EAICharacter::AC4EAICharacter()
 	_damageComp->SetupAttachment(RootComponent);
 	this->OnTakeAnyDamage.AddUniqueDynamic(this,&AC4EAICharacter::DamagePoints);
 	_damageComp->SetWidgetClass(_damageWidgetClass);
+	
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AIControllerClass = AC4EAIController::StaticClass();
 }
 
 UBehaviorTree* AC4EAICharacter::GetBehaviourTree()

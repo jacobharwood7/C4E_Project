@@ -32,6 +32,8 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 	float _damage;
 	
+	
+	
 	/** Returns CollisionComp subobject **/
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/

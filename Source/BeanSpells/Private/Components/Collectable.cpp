@@ -4,7 +4,6 @@
 ACollectable::ACollectable()
 {
 	_pointsValue = 1;
-	//_Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	
 	_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = _mesh;

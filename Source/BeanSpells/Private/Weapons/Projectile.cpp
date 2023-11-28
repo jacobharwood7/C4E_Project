@@ -31,14 +31,17 @@ AProjectile::AProjectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+
+	
 }
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	int _newdamage = FMath::RandRange(_damage-10,_damage+10);
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		UGameplayStatics::ApplyDamage(OtherActor,_damage,GetInstigatorController(),this,UDamageType::StaticClass());
+		UGameplayStatics::ApplyDamage(OtherActor,_newdamage,GetInstigatorController(),this,UDamageType::StaticClass());
 
 		if(OtherComp->IsSimulatingPhysics())
 		{

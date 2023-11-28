@@ -24,12 +24,12 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	int _pointsValue;
 	
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UStaticMeshComponent> _mesh;
 protected:
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<USceneComponent> _Root;
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
-	TObjectPtr<UStaticMeshComponent> _mesh;
 
 	
 	UFUNCTION(BlueprintCallable)

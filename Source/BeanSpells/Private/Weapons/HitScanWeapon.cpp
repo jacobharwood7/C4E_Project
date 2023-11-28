@@ -23,7 +23,8 @@ bool AHitScanWeapon::Fire_Implementation()
 		,true,{},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,0.3f))
 	{
 		
-		UGameplayStatics::ApplyDamage(Hit.GetActor(),_typeData->_damage,GetInstigatorController(),this,UDamageType::StaticClass());
+		int newDamage = FMath::RandRange(_typeData->_damage-10,_typeData->_damage+10);
+		UGameplayStatics::ApplyDamage(Hit.GetActor(),newDamage,GetInstigatorController(),this,UDamageType::StaticClass());
 		
 		return true;
 	}
