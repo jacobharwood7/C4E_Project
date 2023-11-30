@@ -3,9 +3,11 @@
 
 #include "Widget/WidgetWheel.h"
 
+#include "EnhancedInputComponent.h"
 #include "Components/Button.h"
 #include "Components/Inventory.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetInputLibrary.h"
 #include "Player/C4ECharacter.h"
 #include "Player/C4EPlayerController.h"
 #include "Weapons/Weapon_Base.h"
@@ -15,7 +17,8 @@ void UWidgetWheel::NativeConstruct()
 	Super::NativeConstruct();
 	
 	PC = Cast<AC4EPlayerController>(GetOwningPlayer());
-	
+	SetIsFocusable(true);
+	SetFocus();
 
 	if(_left)
 	{		
@@ -35,7 +38,7 @@ void UWidgetWheel::NativeConstruct()
 	{		
 		_down->OnPressed.AddUniqueDynamic(this,&UWidgetWheel::DownPressed);
 	}
-
+	
 	if(_upImg)
 	{
 		_upImg->SetBrushFromTexture(PC->_playerInv->_inventory[0]->GetDefaultObject<AWeapon_Base>()->_icon);
@@ -82,7 +85,6 @@ void UWidgetWheel::WeaponSwitch(FString button)
 			Player->ChangeWeapon(Weapon);
 		}
 	}
-
 	RemoveFromParent();
 }
 
@@ -113,3 +115,16 @@ void UWidgetWheel::DownPressed()
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Black,FString::Printf(TEXT("button pressed, name is : %s"),*name));
 	WeaponSwitch(name);
 }
+
+FReply UWidgetWheel::NativeOnKeyUp(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
+{
+	FKey Lifted = UKismetInputLibrary::GetKey(InKeyEvent);
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Black,FString::Printf(TEXT("button Lifted, name is : %s"),*Lifted.GetFName().ToString()));
+	if(Lifted == "Q")
+	{
+		PC->Handle_FinishSwitchWeapon();
+	}
+	
+	return Super::NativeOnKeyUp(InGeometry, InKeyEvent);
+}
+

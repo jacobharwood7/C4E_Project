@@ -53,9 +53,9 @@ void AC4EPlayerController::SetupInputComponent()
 			UEIP->BindAction(_inputActions->ShootAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Shoot);
 			
 			UEIP->BindAction(_inputActions->PauseAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_Paused);
-			UEIP->BindAction(_inputActions->SwitchActionOn.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_SwitchWeapon);
+			UEIP->BindAction(_inputActions->SwitchActionOn.LoadSynchronous(),ETriggerEvent::Completed,this,&AC4EPlayerController::Handle_SwitchWeapon);
 			//not firing in ui mode
-			UEIP->BindAction(_inputActions->SwitchActionOff.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_FinishSwitchWeapon);
+			//UEIP->BindAction(_inputActions->SwitchActionOff.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_FinishSwitchWeapon);
 
 			UEIP->BindAction(_inputActions->ViewAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::ChangeView);
 
@@ -157,15 +157,13 @@ void AC4EPlayerController::Handle_Paused()
 
 void AC4EPlayerController::Handle_SwitchWeapon()
 {
-	
-	
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("SWITCH  ATTEMPT"));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("SWITCH ATTEMPT"));
 	if(_wheelWidgetClass)
 	{
 		_wheelWidget = CreateWidget<UWidgetWheel,AC4EPlayerController*>(this,_wheelWidgetClass);
 		_wheelWidget->AddToViewport();
 		SetShowMouseCursor(true);
-		SetInputMode(FInputModeGameAndUI());
+		SetInputMode(FInputModeUIOnly());
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
 		
 	}
@@ -173,9 +171,9 @@ void AC4EPlayerController::Handle_SwitchWeapon()
 
 void AC4EPlayerController::Handle_FinishSwitchWeapon()
 {
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Finished ATTEMPT"));
 	if (_wheelWidget)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Finished ATTEMPT"));
 		if(_wheelWidgetClass)
 		{
 			_wheelWidget->RemoveFromParent();

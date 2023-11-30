@@ -29,8 +29,8 @@ public:
 	void UpPressed();
 	UFUNCTION()
 	void DownPressed();
+	virtual FReply NativeOnKeyUp(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 	
-
 	TObjectPtr<AC4EPlayerController> PC;
 	
 	UPROPERTY(meta = (BindWidget))
