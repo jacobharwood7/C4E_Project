@@ -55,6 +55,12 @@ public:
 	void Handle_Paused();
 
 	UFUNCTION()
+	void Handle_Dead(AController* causer);
+
+	UFUNCTION()
+	void Handle_Damage(float newhealth);
+
+	UFUNCTION()
 	void Handle_SwitchWeapon();
 	void Handle_FinishSwitchWeapon();
 
@@ -80,6 +86,6 @@ protected:
 
 	
 	int _score;
-
+	int _maxHealth;
 	int _coins;
 };

@@ -4,6 +4,7 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/Health.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/Fireable.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -27,20 +28,23 @@ AC4ECharacter::AC4ECharacter()
 	_CurrentCamera = _TPCamera;
 	
 	_FPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	_FPCamera->SetupAttachment(GetMesh());
-	_FPCamera->SetRelativeLocation(FVector(10.0f,0.0f,70.0f));
+	_FPCamera->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform,TEXT("head"));
 	_FPCamera->bUsePawnControlRotation = true;
 	_FPCamera->bAutoActivate = false;
 
 	_weaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponAttachPoint"));
-	_weaponAttachPoint->SetupAttachment(GetMesh());
+	
+	_weaponAttachPoint->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform,TEXT("hand_r"));
 
 	
 	_footCoinCollection = CreateDefaultSubobject<UBoxComponent>(TEXT("Feet"));
 	_footCoinCollection->SetupAttachment(GetCapsuleComponent());
-	
+
+	_health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
 	
 	SetupStimulusSource();
+
+	
 }
 
 void AC4ECharacter::Move_Implementation(const FInputActionValue& Input)
@@ -94,6 +98,16 @@ void AC4ECharacter::StopJump_Implementation()
 		Super::StopJumping();
 	}
 }
+void AC4ECharacter::Init_Implementation()
+{
+	bUseControllerRotationYaw = false;
+	
+	if(_defaultWeapon)
+	{
+		ChangeWeapon(_defaultWeapon);
+	}
+}
+
 
 void AC4ECharacter::ChangeView()
 {	
@@ -114,15 +128,6 @@ void AC4ECharacter::ChangeView()
 }
 
 
-void AC4ECharacter::Init_Implementation()
-{	
-	bUseControllerRotationYaw = false;
-	
-	if(_defaultWeapon)
-	{
-		ChangeWeapon(_defaultWeapon);
-	}
-}
 
 
 void AC4ECharacter::SetupStimulusSource()

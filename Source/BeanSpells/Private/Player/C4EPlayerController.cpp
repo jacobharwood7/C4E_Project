@@ -3,7 +3,9 @@
 #include "Player/C4ECharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/Health.h"
 #include "Components/Inventory.h"
+#include "Game/C4EGameMode.h"
 #include "Player/InputAsset.h"
 #include "Widget/WidgetScore.h"
 #include "Widget/WidgetPause.h"
@@ -18,11 +20,13 @@ AC4EPlayerController::AC4EPlayerController() : Super()
 {
 	
 	_playerInv = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
+	
 	_score=0;
 }
 
 void AC4EPlayerController::Init_Implementation()
 {
+	
 	if(UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		if(_mappingContext)
@@ -78,6 +82,9 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 	{
 		//TODO: Bind to any relevant events
 		castedPawn->Init();
+		castedPawn->_health->OnDead.AddUniqueDynamic(this,&AC4EPlayerController::Handle_Dead);
+		castedPawn->_health->OnDamaged.AddUniqueDynamic(this,&AC4EPlayerController::Handle_Damage);
+		_maxHealth = castedPawn->_health->_maxHealth;
 	}
 
 	if(_scoreWidgetClass)
@@ -144,7 +151,7 @@ void AC4EPlayerController::StopJump()
 
 void AC4EPlayerController::Handle_Paused()
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Pause  ATTEMPT"));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Pause ATTEMPT"));
 	if(_pauseWidgetClass)
 	{
 		_pauseWidget = CreateWidget<UWidgetPause,AC4EPlayerController*>(this,_pauseWidgetClass);
@@ -153,6 +160,19 @@ void AC4EPlayerController::Handle_Paused()
 		SetInputMode(FInputModeUIOnly());
 		UGameplayStatics::SetGamePaused(GetWorld(),true);
 	}
+}
+
+
+void AC4EPlayerController::Handle_Dead(AController* causer)
+{
+	
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Orange,TEXT("I AM Dead"));
+	Cast<AC4EGameMode>(GetWorld()->GetAuthGameMode())->EndMatch();
+}
+
+void AC4EPlayerController::Handle_Damage(float newhealth)
+{
+	_scoreWidget->UpdateHealth(newhealth/_maxHealth, _maxHealth);
 }
 
 void AC4EPlayerController::Handle_SwitchWeapon()

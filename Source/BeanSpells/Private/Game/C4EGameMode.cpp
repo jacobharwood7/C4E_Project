@@ -18,6 +18,7 @@
 #include "TimerManager.h"
 #include "Components/Target.h"
 #include "Game/GameRuleTarget.h"
+#include "Widget/WidgetDead.h"
 
 AC4EGameMode::AC4EGameMode() : Super()
 {
@@ -61,7 +62,7 @@ void AC4EGameMode::Handle_GameRuleCompleted(UGameRule* rule)
 
 	_gameRulesLeft--;
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Blue,FString::Printf(TEXT("Game Rule completed. %d Remaining"), _gameRulesLeft));
-	if(_gameRulesLeft!=0){return;}
+	if(_gameRulesLeft!=0||_playerControllers.Num()!=0){return;}
 	EndMatch();
 }
 
@@ -86,32 +87,43 @@ void AC4EGameMode::Handle_GameRulePointsScored(AController* scorer, int points,i
 void AC4EGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	GetWorld()->GetTimerManager().SetTimer(_TimerSpawnerHandle,this,&AC4EGameMode::SpawnAI,2.0f,true);
+	GetWorld()->GetTimerManager().PauseTimer(_TimerSpawnerHandle);
 }
 
 
 void AC4EGameMode::HandleMatchIsWaitingToStart()
-{	
+{
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(),FName("AISpawn"),_spawnPoints);
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Orange,FString::Printf(TEXT("Number of AI Spawn Points is : %d"),_spawnPoints.Num()));
+
+	TArray<AActor*> pawns;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(),ACharacter::StaticClass(),pawns);
 	
-	//create main menu widget
-	if(_menuWidgetClass)
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Blue,FString::Printf(TEXT("pawns : %d"),pawns.Num()));
+	
+	for (auto p : pawns)
 	{
-		AC4EPlayerController* PC = Cast<AC4EPlayerController>(_playerControllers[0]);
-		PC->SetInitialLocationAndRotation(menuPoint->GetActorLocation(),menuPoint->GetActorRotation());
-		_menuWidget = CreateWidget<UWidgetMainMenu,AC4EPlayerController*>(PC,_menuWidgetClass);
-		_menuWidget->AddToViewport();
-		PC->SetShowMouseCursor(true);
-		PC->SetInputMode(FInputModeUIOnly());
-
-		_menuWidget->OnStart.AddUniqueDynamic(this,&AGameMode::StartMatch);
+		TArray<AActor*> FoundActors = p->Children;
+		for (AActor* ActorFound :FoundActors)
+		{
+			ActorFound->Destroy();
+		}
+		p->Destroy();
 	}
-
+	SetUpMenu();
+	
 	Super::HandleMatchIsWaitingToStart();
+
 }
 
 void AC4EGameMode::HandleMatchHasStarted()
 {
+	if(_menuWidget)
+	{
+		_menuWidget->RemoveFromParent();		
+	}
+	GetWorld()->GetTimerManager().UnPauseTimer(_TimerSpawnerHandle);
 	TArray<UActorComponent*> outComponents;
 	GetComponents(outComponents);
 	for(UActorComponent* comp : outComponents)
@@ -129,6 +141,7 @@ void AC4EGameMode::HandleMatchHasStarted()
 			}
 		}
 	}
+	
 	for(AController* controller:_playerControllers)
 	{
 		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("1"));
@@ -141,7 +154,8 @@ void AC4EGameMode::HandleMatchHasStarted()
 	}
 
 	/*--SPAWN AI--*/
-	GetWorld()->GetTimerManager().SetTimer(_TimerSpawnerHandle,this,&AC4EGameMode::SpawnAI,2.0f,true);
+	
+	
 	
 	Super::HandleMatchHasStarted();
 }
@@ -149,12 +163,24 @@ void AC4EGameMode::HandleMatchHasStarted()
 void AC4EGameMode::HandleMatchHasEnded()
 {
 	for(AController*controller:_playerControllers)
+    {
+        if(UKismetSystemLibrary::DoesImplementInterface(controller,UMatchStateHandler::StaticClass()))
+        {
+            IMatchStateHandler::Execute_Handle_MatchEnded(controller);
+        }
+    }
+	if(_deathWidgetClass)
 	{
-		if(UKismetSystemLibrary::DoesImplementInterface(controller,UMatchStateHandler::StaticClass()))
-		{
-			IMatchStateHandler::Execute_Handle_MatchEnded(controller);
-		}
+	    if(AC4EPlayerController* PC = Cast<AC4EPlayerController>(_playerControllers[0]))
+	    {
+	        _deathWidget = CreateWidget<UWidgetDead,AC4EPlayerController*>(PC,_deathWidgetClass);
+	        _deathWidget->AddToViewport();
+			PC->SetShowMouseCursor(true);
+			PC->SetInputMode(FInputModeUIOnly());
+	        _deathWidget->OnReturn.AddUniqueDynamic(this,&AC4EGameMode::Restart);
+	    }
 	}
+	GetWorld()->GetTimerManager().PauseTimer(_TimerSpawnerHandle);
 	Super::HandleMatchHasEnded();
 }
 
@@ -209,5 +235,30 @@ void AC4EGameMode::SpawnAI()
 		UGameRuleTarget* TargetRule = FindComponentByClass<UGameRuleTarget>();
 		TargetRule->Handle_TargetSpawned(AI->FindComponentByClass<UTarget>());
 	}
+}
+
+void AC4EGameMode::SetUpMenu()
+{
+	if(_menuWidgetClass)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Blue,FString::Printf(TEXT("pcs : %d"),_playerControllers.Num()));
+		AC4EPlayerController* PC = Cast<AC4EPlayerController>(_playerControllers[0]);
+		PC->Init();
+		PC->SetInitialLocationAndRotation(menuPoint->GetActorLocation(),menuPoint->GetActorRotation());
+		_menuWidget = CreateWidget<UWidgetMainMenu,AC4EPlayerController*>(PC,_menuWidgetClass);
+		if(_menuWidget->IsInViewport()){/*do nothing*/}
+		else{_menuWidget->AddToViewport();}
+		PC->SetShowMouseCursor(true);
+		PC->SetInputMode(FInputModeUIOnly());
+
+		_menuWidget->OnStart.AddUniqueDynamic(this,&AGameMode::StartMatch);
+		
+
+	}
+}
+
+void AC4EGameMode::Restart()
+{
+	SetMatchState(MatchState::WaitingToStart);
 }
 

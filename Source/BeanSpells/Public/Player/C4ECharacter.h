@@ -9,6 +9,7 @@
 #include "C4ECharacter.generated.h"
 
 
+class UHealth;
 class USpringArmComponent;
 class UInventory;
 class UBoxComponent;
@@ -44,6 +45,9 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AWeapon_Base> _defaultWeapon;
+	
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<UHealth> _health;
 
 protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta =(AllowPrivateAccess = "true"))

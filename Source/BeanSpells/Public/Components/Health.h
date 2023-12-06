@@ -9,6 +9,7 @@
 class UWidgetComponent;
 class UWidgetDamage;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComponentDeadSignature, AController*, causer);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComponentDamagedSignature, float, newhealth);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class BEANSPELLS_API UHealth : public UActorComponent
@@ -19,29 +20,17 @@ public:
 	UHealth();
 
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY(BlueprintAssignable,Category = "Components")
 	FComponentDeadSignature OnDead;
+	UPROPERTY(BlueprintAssignable,Category = "Components")
+	FComponentDamagedSignature OnDamaged;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Health")
+	float _maxHealth;
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Health")
 	float _currentHealth;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Health")
-	float _maxHealth;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Shield")
-	float _currentShield;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Shield")
-	float _maxShield;
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Shield")
-	bool _canRegenShield;
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Shield")
-	float _shieldRecoverDelayTimer;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Shield")
-	float _shieldRecoveryRate;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Shield")
-	float _shieldRecoverDelay;
 	
 	virtual void BeginPlay() override;
 
