@@ -33,8 +33,9 @@ AC4ECharacter::AC4ECharacter()
 	_FPCamera->bAutoActivate = false;
 
 	_weaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponAttachPoint"));
+	//_weaponAttachPoint->SetupAttachment(GetMesh());
 	
-	_weaponAttachPoint->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform,TEXT("hand_r"));
+	_weaponAttachPoint->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 	
 	_footCoinCollection = CreateDefaultSubobject<UBoxComponent>(TEXT("Feet"));
