@@ -16,7 +16,7 @@ bool AHitScanWeapon::Fire_Implementation()
 
 	FHitResult Hit(ForceInit);
 	FVector Origin = _Muzzle->GetComponentLocation();
-	FVector End = Origin+_Muzzle->GetForwardVector()*_Range;
+	FVector End = Origin+_Muzzle->GetForwardVector()* _Range;
 	
 
 	if(UKismetSystemLibrary::LineTraceSingle(GetWorld(),Origin,End,UEngineTypes::ConvertToTraceType(ECC_Visibility)

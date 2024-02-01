@@ -167,6 +167,10 @@ void AC4EPlayerController::Handle_Dead(AController* causer)
 {
 	
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Orange,TEXT("I AM Dead"));
+	_scoreWidget->RemoveFromParent();
+	_scoreWidget->Destruct();
+	_coinWidget->RemoveFromParent();
+	_coinWidget->Destruct();
 	Cast<AC4EGameMode>(GetWorld()->GetAuthGameMode())->EndMatch();
 }
 

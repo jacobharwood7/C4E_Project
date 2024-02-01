@@ -49,11 +49,11 @@ void UWidgetWheel::NativeConstruct()
 	}
 	if(_downImg)
 	{		
-		_downImg->SetBrushFromTexture(PC->_playerInv->_inventory[0]->GetDefaultObject<AWeapon_Base>()->_icon);
+		_downImg->SetBrushFromTexture(PC->_playerInv->_inventory[2]->GetDefaultObject<AWeapon_Base>()->_icon);
 	}
 	if(_rightImg)
 	{		
-		_rightImg->SetBrushFromTexture(PC->_playerInv->_inventory[1]->GetDefaultObject<AWeapon_Base>()->_icon);
+		_rightImg->SetBrushFromTexture(PC->_playerInv->_inventory[3]->GetDefaultObject<AWeapon_Base>()->_icon);
 	}
 	
 	
