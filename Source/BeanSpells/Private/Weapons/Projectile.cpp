@@ -1,5 +1,7 @@
 ﻿#include "Weapons/Projectile.h"
 
+#include <iostream>
+
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -49,4 +51,7 @@ void AProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherA
 		}
 
 	}
+
+
+	
 }
