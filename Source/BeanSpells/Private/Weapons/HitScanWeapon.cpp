@@ -16,16 +16,16 @@ bool AHitScanWeapon::Fire_Implementation()
 
 	FHitResult Hit(ForceInit);
 	FVector Origin = _Muzzle->GetComponentLocation();
-	FVector End = Origin+_Muzzle->GetForwardVector()*_Range;
+	FVector End = Origin+_Muzzle->GetForwardVector()* _Range;
 	
 
 	if(UKismetSystemLibrary::LineTraceSingle(GetWorld(),Origin,End,UEngineTypes::ConvertToTraceType(ECC_Visibility)
-		,true,{GetOwner()},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,0.3f))
+		,true,{},EDrawDebugTrace::ForDuration,Hit,true,FLinearColor::Red,FLinearColor::Green,0.3f))
 	{
-		if(Hit.GetActor()->CanBeDamaged())
-		{
-			UGameplayStatics::ApplyDamage(Hit.GetActor(),_typeData->_damage,GetInstigatorController(),this,UDamageType::StaticClass());
-		}
+		
+		int newDamage = FMath::RandRange(_typeData->_damage-10,_typeData->_damage+10);
+		UGameplayStatics::ApplyDamage(Hit.GetActor(),newDamage,GetInstigatorController(),this,UDamageType::StaticClass());
+		
 		return true;
 	}
 	return false;

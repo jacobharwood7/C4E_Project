@@ -13,9 +13,9 @@ class BEANSPELLS_API AProjectileWeapon : public AWeapon_Base
 	GENERATED_BODY()
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AProjectile> _projectile;
-	
 
 public:
 	virtual bool Fire_Implementation() override;
+	
 
 };

@@ -3,6 +3,9 @@
 #include "Player/C4ECharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/Health.h"
+#include "Components/Inventory.h"
+#include "Game/C4EGameMode.h"
 #include "Player/InputAsset.h"
 #include "Widget/WidgetScore.h"
 #include "Widget/WidgetPause.h"
@@ -15,11 +18,15 @@
 
 AC4EPlayerController::AC4EPlayerController() : Super()
 {
+	
+	_playerInv = CreateDefaultSubobject<UInventory>(TEXT("Inventory"));
+	
 	_score=0;
 }
 
 void AC4EPlayerController::Init_Implementation()
 {
+	
 	if(UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		if(_mappingContext)
@@ -50,9 +57,11 @@ void AC4EPlayerController::SetupInputComponent()
 			UEIP->BindAction(_inputActions->ShootAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Shoot);
 			
 			UEIP->BindAction(_inputActions->PauseAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_Paused);
-			UEIP->BindAction(_inputActions->SwitchActionOn.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_SwitchWeapon);
+			UEIP->BindAction(_inputActions->SwitchActionOn.LoadSynchronous(),ETriggerEvent::Completed,this,&AC4EPlayerController::Handle_SwitchWeapon);
 			//not firing in ui mode
-			UEIP->BindAction(_inputActions->SwitchActionOff.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_FinishSwitchWeapon);
+			//UEIP->BindAction(_inputActions->SwitchActionOff.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::Handle_FinishSwitchWeapon);
+
+			UEIP->BindAction(_inputActions->ViewAction.LoadSynchronous(),ETriggerEvent::Triggered,this,&AC4EPlayerController::ChangeView);
 
 		}
 	}
@@ -73,6 +82,9 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 	{
 		//TODO: Bind to any relevant events
 		castedPawn->Init();
+		castedPawn->_health->OnDead.AddUniqueDynamic(this,&AC4EPlayerController::Handle_Dead);
+		castedPawn->_health->OnDamaged.AddUniqueDynamic(this,&AC4EPlayerController::Handle_Damage);
+		_maxHealth = castedPawn->_health->_maxHealth;
 	}
 
 	if(_scoreWidgetClass)
@@ -85,6 +97,7 @@ void AC4EPlayerController::Handle_MatchStarted_Implementation()
 		_coinWidget = CreateWidget<UWidgetCoins,AC4EPlayerController*>(this,_coinWidgetClass);
 		_coinWidget->AddToViewport();
 	}
+
 }
 
 void AC4EPlayerController::Handle_MatchEnded_Implementation()
@@ -138,7 +151,7 @@ void AC4EPlayerController::StopJump()
 
 void AC4EPlayerController::Handle_Paused()
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Pause  ATTEMPT"));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Pause ATTEMPT"));
 	if(_pauseWidgetClass)
 	{
 		_pauseWidget = CreateWidget<UWidgetPause,AC4EPlayerController*>(this,_pauseWidgetClass);
@@ -149,15 +162,32 @@ void AC4EPlayerController::Handle_Paused()
 	}
 }
 
+
+void AC4EPlayerController::Handle_Dead(AController* causer)
+{
+	
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Orange,TEXT("I AM Dead"));
+	_scoreWidget->RemoveFromParent();
+	_scoreWidget->Destruct();
+	_coinWidget->RemoveFromParent();
+	_coinWidget->Destruct();
+	Cast<AC4EGameMode>(GetWorld()->GetAuthGameMode())->EndMatch();
+}
+
+void AC4EPlayerController::Handle_Damage(float newhealth)
+{
+	_scoreWidget->UpdateHealth(newhealth/_maxHealth, _maxHealth);
+}
+
 void AC4EPlayerController::Handle_SwitchWeapon()
 {
-	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("SWITCH  ATTEMPT"));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("SWITCH ATTEMPT"));
 	if(_wheelWidgetClass)
 	{
 		_wheelWidget = CreateWidget<UWidgetWheel,AC4EPlayerController*>(this,_wheelWidgetClass);
 		_wheelWidget->AddToViewport();
 		SetShowMouseCursor(true);
-		SetInputMode(FInputModeGameAndUI());
+		SetInputMode(FInputModeUIOnly());
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.2);
 		
 	}
@@ -166,14 +196,20 @@ void AC4EPlayerController::Handle_SwitchWeapon()
 void AC4EPlayerController::Handle_FinishSwitchWeapon()
 {
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("Finished ATTEMPT"));
-
-	
+	if (_wheelWidget)
+	{
 		if(_wheelWidgetClass)
 		{
 			_wheelWidget->RemoveFromParent();
 			SetShowMouseCursor(false);
 			SetInputMode(FInputModeGameOnly());
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1.0f);
-		}
-	
+		}		
+	}	
+}
+
+void AC4EPlayerController::ChangeView()
+{
+	AC4ECharacter* castedPawn = Cast<AC4ECharacter>(_tempPawn);
+	castedPawn->ChangeView();
 }

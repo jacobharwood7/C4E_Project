@@ -3,6 +3,8 @@
 #include "Components/Health.h"
 #include "Game/C4EGameMode.h"
 #include "Game/GameRuleCollectables.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Physics/ImmediatePhysics/ImmediatePhysicsShared/ImmediatePhysicsCore.h"
 
 UTarget::UTarget()
 {
@@ -36,13 +38,11 @@ void UTarget::Handle_Dead(AController* causer)
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Magenta,FString::Printf(TEXT("TARget DIED : ")));
 	OnTargetDestroyed.Broadcast(GetOwner(),causer);
 	TArray<AActor*> FoundActors = GetOwner()->Children;
-
-	SpawnCoins();
-	
 	for (AActor* ActorFound :FoundActors)
 	{
 		ActorFound->Destroy();
 	}
+	SpawnCoins();
 	GetOwner()->Destroy();
 }
 
@@ -50,13 +50,17 @@ void UTarget::SpawnCoins()
 {
 	int CoinCount = FMath::RandRange(5,20);
 	FVector spawnLocation = GetOwner()->GetActorLocation();
+	FVector origin =  GetOwner()->GetActorLocation();
+	
 	FRotator spawnRotation = GetOwner()->GetActorRotation();
 	FActorSpawnParameters spawnParams;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	for (int i=0;i<CoinCount;i++)
 	{
+		spawnLocation = spawnLocation+UKismetMathLibrary::RandomUnitVector()*20.0f;
 		if(ACollectable* Coin = GetWorld()->SpawnActor<ACollectable>(_coin,spawnLocation,spawnRotation,spawnParams))
 		{
+			//Coin->_mesh->AddImpulse(origin-spawnLocation,"None",false);
 			grc->Handle_Spawn(Coin);
 		}
 	}

@@ -9,6 +9,9 @@
 #include "C4ECharacter.generated.h"
 
 
+class UHealth;
+class USpringArmComponent;
+class UInventory;
 class UBoxComponent;
 class UAIPerceptionStimuliSourceComponent;
 class UWeaponType;
@@ -22,16 +25,6 @@ class BEANSPELLS_API AC4ECharacter : public ACharacter, public IInterface_Input
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
-	TObjectPtr<UCameraComponent> _camera;
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
-	TObjectPtr<USceneComponent> _weaponAttachPoint;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
-	TObjectPtr<UBoxComponent> _footCoinCollection;
-
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
-	UInputMappingContext* PlayerMappingContext;
 
 
 public:
@@ -43,11 +36,39 @@ public:
 	virtual void Shoot_Implementation() override;
 	virtual void Jump_Implementation() override;
 	virtual void StopJump_Implementation() override;
+
+	UFUNCTION()
+	void ChangeView();
+
+	UFUNCTION()
+	void ChangeWeapon(TSubclassOf<AWeapon_Base> newWeapon);
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AWeapon_Base> _defaultWeapon;
 	
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<UHealth> _health;
 
 protected:
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TSubclassOf<AWeapon_Base> _CurrentWeapon;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<UCameraComponent> _TPCamera;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<UCameraComponent> _FPCamera;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<UCameraComponent> _CurrentCamera;
+	
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<USpringArmComponent> _cameraBoomArm;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> _weaponAttachPoint;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<UBoxComponent> _footCoinCollection;
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Input" ,meta =(AllowPrivateAccess = "true"))
+	UInputMappingContext* PlayerMappingContext;
+	
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<AActor> _FireableRef;

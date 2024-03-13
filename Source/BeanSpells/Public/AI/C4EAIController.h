@@ -48,7 +48,4 @@ protected:
 	virtual void Handle_MatchStarted_Implementation() override;
 	virtual void Handle_MatchEnded_Implementation() override;
 
-	UFUNCTION()
-	void SpawnAI();
-	
 };

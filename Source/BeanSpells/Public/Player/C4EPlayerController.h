@@ -6,6 +6,7 @@
 #include "Interfaces/MatchStateHandler.h"
 #include "C4EPlayerController.generated.h"
 
+class UInventory;
 class UWidgetWheel;
 class UWidgetCoins;
 class AC4ECharacter;
@@ -29,6 +30,9 @@ public:
 	
 	TObjectPtr<APawn> _tempPawn;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Inventory" ,meta =(AllowPrivateAccess = "true"))
+	TObjectPtr<UInventory> _playerInv;
+	
 	void Move(const FInputActionValue& Input);
 	void Look(const FInputActionValue& Input);
 	void Shoot();
@@ -40,6 +44,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void Init();
 
+	void ChangeView();
 	UFUNCTION()
 	virtual void SetupInputComponent() override;
 
@@ -48,6 +53,12 @@ public:
 
 	UFUNCTION()
 	void Handle_Paused();
+
+	UFUNCTION()
+	void Handle_Dead(AController* causer);
+
+	UFUNCTION()
+	void Handle_Damage(float newhealth);
 
 	UFUNCTION()
 	void Handle_SwitchWeapon();
@@ -72,8 +83,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UWidgetWheel> _wheelWidgetClass;
 	TObjectPtr<UWidgetWheel> _wheelWidget;
+
 	
 	int _score;
-
+	int _maxHealth;
 	int _coins;
 };

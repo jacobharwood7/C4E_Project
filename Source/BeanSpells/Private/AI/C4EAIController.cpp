@@ -25,11 +25,7 @@ void AC4EAIController::OnPossess(APawn* InPawn)
 	if (AC4EAICharacter* AI = Cast<AC4EAICharacter>(InPawn))
 	{
 		AI->Init_Implementation();
-		UBlackboardComponent* bc;
-		UseBlackboard(AI->GetBehaviourTree()->BlackboardAsset,bc);
-		Blackboard = bc;
 		RunBehaviorTree(AI->GetBehaviourTree());
-		
 	}
 }
 
@@ -66,8 +62,6 @@ void AC4EAIController::OnTargetDetected(AActor* Actor, FAIStimulus stimulus)
 
 void AC4EAIController::Handle_MatchStarted_Implementation()
 {
-	GetWorld()->GetTimerManager().SetTimer(_TimerSpawnerHandle,this,&AC4EAIController::SpawnAI,_spawnRate,true);
-	
 	IMatchStateHandler::Handle_MatchStarted_Implementation();
 }
 
@@ -75,25 +69,4 @@ void AC4EAIController::Handle_MatchEnded_Implementation()
 {
 	IMatchStateHandler::Handle_MatchEnded_Implementation();
 }
-
-void AC4EAIController::SpawnAI()
-{
-	UWorld* const World = GetWorld();
-	UGameplayStatics::GetAllActorsWithTag(World,FName("AISpawn"),_spawnPoints);
-	int chosenSpawn = FMath::RandRange(0,_spawnPoints.Num());
-	FVector spawnLocation = _spawnPoints[chosenSpawn]->GetActorLocation();
-	FRotator spawnRotation = _spawnPoints[chosenSpawn]->GetActorRotation();
-	FActorSpawnParameters spawnParams;
-	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	
-	_AIPawn = World->SpawnActor<APawn>(_pawnToSpawn,spawnLocation,spawnRotation,spawnParams);
-	Possess(_AIPawn);
-	if(AC4EAICharacter* castedPawn = Cast<AC4EAICharacter>(_AIPawn))
-	{
-		//TODO: Bind to any relevant events
-		castedPawn->Init();
-	}
-	
-}
-
 

@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/Image.h"
 #include "Interfaces/Fireable.h"
 #include "GameFramework/Actor.h"
 #include "Weapon_Base.generated.h"
 
+class UImage;
 class UWeaponType;
 class UArrowComponent;
 
@@ -17,6 +19,10 @@ class BEANSPELLS_API AWeapon_Base : public AActor, public IFireable
 
 	
 public:
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<UTexture2D> _icon;
+	
 	AWeapon_Base();
 
 	virtual bool Fire_Implementation() override;
@@ -35,7 +41,8 @@ protected:
 	
 	UPROPERTY(VisibleDefaultsOnly,BlueprintReadOnly)
 	TObjectPtr<UArrowComponent> _Muzzle;
-
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<UWeaponType> _typeData;
+	
+
 };

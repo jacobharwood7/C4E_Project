@@ -4,7 +4,10 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/Health.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Interfaces/Fireable.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Weapons/Weapon_Base.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
@@ -13,19 +16,36 @@
 AC4ECharacter::AC4ECharacter()
 {
 	GetCapsuleComponent()->InitCapsuleSize(55.0f,96.0f);
-	_camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	_camera->SetupAttachment(GetCapsuleComponent());
-	_camera->SetRelativeLocation(FVector(-10.0f,0.0f,60.0f));
-	_camera->bUsePawnControlRotation = true;
+	_cameraBoomArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Boom Arm"));
+	_cameraBoomArm->SetupAttachment(RootComponent);
+	_cameraBoomArm->TargetArmLength = 350.0f;
+	_cameraBoomArm->bUsePawnControlRotation = true;
+	
+	_TPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
+	_TPCamera->SetupAttachment(_cameraBoomArm);
+	_TPCamera->bUsePawnControlRotation = true;
+	_TPCamera->bAutoActivate = true;
+	_CurrentCamera = _TPCamera;
+	
+	_FPCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	_FPCamera->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform,TEXT("head"));
+	_FPCamera->bUsePawnControlRotation = true;
+	_FPCamera->bAutoActivate = false;
 
 	_weaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponAttachPoint"));
-	_weaponAttachPoint->SetupAttachment(_camera);
+	//_weaponAttachPoint->SetupAttachment(GetMesh());
+	
+	_weaponAttachPoint->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 	
 	_footCoinCollection = CreateDefaultSubobject<UBoxComponent>(TEXT("Feet"));
 	_footCoinCollection->SetupAttachment(GetCapsuleComponent());
 
+	_health = CreateDefaultSubobject<UHealth>(TEXT("Health"));
+	
 	SetupStimulusSource();
+
+	
 }
 
 void AC4ECharacter::Move_Implementation(const FInputActionValue& Input)
@@ -34,9 +54,9 @@ void AC4ECharacter::Move_Implementation(const FInputActionValue& Input)
 	{
 		FVector2d movementVector = Input.Get<FVector2D>();
 		
-		AddMovementInput(GetActorForwardVector(),movementVector.Y);
-		AddMovementInput(GetActorRightVector(),movementVector.X);
 		
+		AddMovementInput(UKismetMathLibrary::GetForwardVector(FRotator(0.0,GetControlRotation().Yaw,0.0)),movementVector.Y);
+		AddMovementInput(UKismetMathLibrary::GetRightVector(FRotator(0.0,GetControlRotation().Yaw,GetControlRotation().Roll)),movementVector.X);
 	}
 }
 
@@ -45,9 +65,11 @@ void AC4ECharacter::Look_Implementation(const FInputActionValue& Input)
 	if(Controller)
 	{
 		FVector2d LookAxisVector = Input.Get<FVector2d>();
-	
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+
+		AddControllerYawInput(LookAxisVector.X*0.5);
+		AddControllerPitchInput(LookAxisVector.Y*0.5);
+
+		_weaponAttachPoint->SetRelativeRotation(_CurrentCamera->GetRelativeRotation());
 	}
 }
 
@@ -77,22 +99,36 @@ void AC4ECharacter::StopJump_Implementation()
 		Super::StopJumping();
 	}
 }
-
 void AC4ECharacter::Init_Implementation()
 {
-	if(_CurrentWeapon)
+	bUseControllerRotationYaw = false;
+	
+	if(_defaultWeapon)
 	{
-		FActorSpawnParameters spawnParams;
-		spawnParams.Owner = this;
-		spawnParams.Instigator = this;
-		TObjectPtr<AWeapon_Base> spawnedGun = GetWorld()->SpawnActor<AWeapon_Base>(_CurrentWeapon.Get(), _weaponAttachPoint->GetComponentTransform(),spawnParams);
-		spawnedGun->AttachToComponent(_weaponAttachPoint,FAttachmentTransformRules::SnapToTargetIncludingScale);
-		if(UKismetSystemLibrary::DoesImplementInterface(spawnedGun, UFireable::StaticClass()))
-		{
-			_FireableRef = spawnedGun;
-		}
+		ChangeWeapon(_defaultWeapon);
 	}
 }
+
+
+void AC4ECharacter::ChangeView()
+{	
+	if(_TPCamera->IsActive())
+	{
+		_FPCamera->SetActive(true);
+		_TPCamera->SetActive(false);
+		_CurrentCamera = _FPCamera;
+		bUseControllerRotationYaw =true;
+	}
+	else
+	{
+		_TPCamera->SetActive(true);
+		_FPCamera->SetActive(false);
+		_CurrentCamera = _TPCamera;
+	}
+	
+}
+
+
 
 
 void AC4ECharacter::SetupStimulusSource()
@@ -103,4 +139,26 @@ void AC4ECharacter::SetupStimulusSource()
 		stimSource->RegisterForSense(TSubclassOf<UAISense_Sight>());//register this stimulus for the sight system
 		stimSource->RegisterWithPerceptionSystem();//register this stimulus with the perception system
 	}
+}
+
+void AC4ECharacter::ChangeWeapon(TSubclassOf<AWeapon_Base> newWeapon)
+{
+	TArray<AActor*> FoundActors = this->Children;
+	for (AActor* ActorFound :FoundActors)
+	{
+		ActorFound->Destroy();
+		GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Red,TEXT("DEAD CHILDREN HAHA"));
+	}
+	
+	FActorSpawnParameters spawnParams;
+	spawnParams.Owner = this;
+	spawnParams.Instigator = this;
+	TObjectPtr<AWeapon_Base> spawnedGun = GetWorld()->SpawnActor<AWeapon_Base>(newWeapon.Get(), _weaponAttachPoint->GetComponentTransform(),spawnParams);
+	spawnedGun->AttachToComponent(_weaponAttachPoint,FAttachmentTransformRules::SnapToTargetIncludingScale);
+	if(UKismetSystemLibrary::DoesImplementInterface(spawnedGun, UFireable::StaticClass()))
+	{
+		_FireableRef = spawnedGun;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Emerald,TEXT("Weapon Equip Attempt"));
 }

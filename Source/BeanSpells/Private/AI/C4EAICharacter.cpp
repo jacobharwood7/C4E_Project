@@ -1,10 +1,13 @@
 ﻿#include "AI/C4EAICharacter.h"
 
+#include "AI/C4EAIController.h"
 #include "Components/CapsuleComponent.h"
 #include "Interfaces/Fireable.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/Target.h"
+#include "Components/WidgetComponent.h"
 #include "Weapons/Weapon_Base.h"
+#include "Widget/WidgetDamage.h"
 
 
 // Sets default values
@@ -14,6 +17,13 @@ AC4EAICharacter::AC4EAICharacter()
 	_weaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponAttachPoint"));
 	_weaponAttachPoint->SetupAttachment(GetCapsuleComponent());
 	_target = CreateDefaultSubobject<UTarget>(TEXT("Target"));
+	_damageComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("DamagePoints"));
+	_damageComp->SetupAttachment(RootComponent);
+	this->OnTakeAnyDamage.AddUniqueDynamic(this,&AC4EAICharacter::DamagePoints);
+	_damageComp->SetWidgetClass(_damageWidgetClass);
+	
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AIControllerClass = AC4EAIController::StaticClass();
 }
 
 UBehaviorTree* AC4EAICharacter::GetBehaviourTree()
@@ -46,3 +56,9 @@ void AC4EAICharacter::Shoot_Implementation()
 	}
 }
 
+void AC4EAICharacter::DamagePoints(AActor* damagedActor, float damage, const UDamageType* damageType,
+						  AController* damageInstigator, AActor* causer)
+{
+	_damageWidget = Cast<UWidgetDamage>(_damageComp->GetUserWidgetObject());
+	_damageWidget->Damage(damage);
+}

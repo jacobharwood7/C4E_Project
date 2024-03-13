@@ -24,7 +24,6 @@ bool AWeapon_Base::Fire_Implementation()
 void AWeapon_Base::Init(UWeaponType* type)
 {
 	_typeData = type;
-
 }
 
 void AWeapon_Base::BeginPlay()

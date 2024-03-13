@@ -4,6 +4,7 @@
 #include "GameFramework/GameMode.h"
 #include "C4EGameMode.generated.h"
 
+class UWidgetDead;
 class AC4EAIController;
 class AC4EAICharacter;
 class UWidgetMainMenu;
@@ -39,6 +40,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UWidgetMainMenu> _menuWidgetClass;
 	TObjectPtr<UWidgetMainMenu> _menuWidget;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UWidgetDead> _deathWidgetClass;
+	TObjectPtr<UWidgetDead> _deathWidget;
 	
 	TArray<TObjectPtr<AActor>> _playerStarts;
 
@@ -58,7 +62,7 @@ protected:
 	void Handle_GameRulePointsScored(AController* scorer, int points, int type);
 
 	virtual void BeginPlay() override;
-
+	UFUNCTION()
 	virtual void HandleMatchIsWaitingToStart() override;
 	virtual void HandleMatchHasStarted() override;
 	virtual void HandleMatchHasEnded() override;
@@ -68,6 +72,9 @@ protected:
 	virtual bool ReadyToStartMatch_Implementation() override;
 	virtual bool ReadyToEndMatch_Implementation() override;
 
-	
 	void SpawnAI();
+	UFUNCTION()
+	void SetUpMenu();
+	UFUNCTION()
+	void Restart();
 };

@@ -6,6 +6,8 @@
 #include "C4EAICharacter.generated.h"
 
 
+class UWidgetComponent;
+class UWidgetDamage;
 class UTarget;
 class UWeaponType;
 class UInputMappingContext;
@@ -44,7 +46,17 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<AActor> _FireableRef;
+
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<UWidgetComponent> _damageComp;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TSubclassOf<UWidgetDamage> _damageWidgetClass;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<UWidgetDamage> _damageWidget;
 	
 	virtual void Shoot_Implementation() override;
 	
+	UFUNCTION()
+	void DamagePoints(AActor* damagedActor, float damage, const UDamageType* damageType, AController* damageInstigator, AActor* causer);
 };
